@@ -70,7 +70,7 @@ seriesMap.forEach((seriesNotes, series) => {
               href={`/notes/${note.id}`}
               class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
             >
-              <h3 class="font-semibold mb-2">{note.data.title}</h3>
+              <h3 class="font-semibold mb-2 text-text dark:text-text-dark">{note.data.title}</h3>
               <p class="text-sm text-text-secondary line-clamp-2">{note.data.description}</p>
               <div class="flex items-center gap-2 mt-3 text-xs text-text-secondary">
                 <time datetime={note.data.pubDate.toISOString()}>

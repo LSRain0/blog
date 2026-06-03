@@ -33,7 +33,7 @@ const projects = (await getCollection('projects'))
 
           <div class="flex flex-wrap gap-2 mb-4">
             {project.data.techStack.map(tech => (
-              <span class="text-xs px-2 py-1 rounded-full bg-surface dark:bg-surface-dark">
+              <span class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
                 {tech}
               </span>
             ))}
