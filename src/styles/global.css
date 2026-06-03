@@ -66,15 +66,19 @@ body::after {
 
 /* 主要内容区域背景 */
 main {
+  margin: 1.5rem;
+  border-radius: 1rem;
   background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  min-height: calc(100vh - 4rem);
+  min-height: calc(100vh - 7rem);
   transition: background-color 0.3s;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .dark main {
   background-color: rgba(17, 24, 39, 0.85);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
 /* KaTeX 公式样式 */
