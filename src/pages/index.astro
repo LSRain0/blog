@@ -20,7 +20,7 @@ const projects = (await getCollection('projects'))
   <div class="max-w-4xl mx-auto px-4 py-12">
     <!-- 个人介绍 -->
     <section class="mb-16">
-      <h1 class="text-4xl font-bold mb-4">
+      <h1 class="text-4xl font-bold mb-4 text-text dark:text-text-dark">
         你好，我是 <span class="text-primary">LSRain</span>
       </h1>
       <p class="text-xl text-text-secondary max-w-2xl">
@@ -31,7 +31,7 @@ const projects = (await getCollection('projects'))
     <!-- 最新文章 -->
     <section class="mb-16">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-semibold">最新文章</h2>
+        <h2 class="text-2xl font-semibold text-text dark:text-text-dark">最新文章</h2>
         <a href="/blog" class="text-primary hover:text-primary-dark transition-colors">
           查看全部 →
         </a>
@@ -55,7 +55,7 @@ const projects = (await getCollection('projects'))
     <!-- 最新笔记 -->
     <section class="mb-16">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-semibold">最新笔记</h2>
+        <h2 class="text-2xl font-semibold text-text dark:text-text-dark">最新笔记</h2>
         <a href="/notes" class="text-primary hover:text-primary-dark transition-colors">
           查看全部 →
         </a>
@@ -66,7 +66,7 @@ const projects = (await getCollection('projects'))
             href={`/notes/${note.id}`}
             class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
           >
-            <h3 class="font-semibold mb-2">{note.data.title}</h3>
+            <h3 class="font-semibold mb-2 text-text dark:text-text-dark">{note.data.title}</h3>
             <p class="text-sm text-text-secondary line-clamp-2">{note.data.description}</p>
             {note.data.series && (
               <span class="inline-block mt-2 text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
@@ -82,7 +82,7 @@ const projects = (await getCollection('projects'))
     {projects.length > 0 && (
       <section class="mb-16">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-semibold">项目展示</h2>
+          <h2 class="text-2xl font-semibold text-text dark:text-text-dark">项目展示</h2>
           <a href="/projects" class="text-primary hover:text-primary-dark transition-colors">
             查看全部 →
           </a>
@@ -93,11 +93,11 @@ const projects = (await getCollection('projects'))
               href={`/projects/${project.id}`}
               class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
             >
-              <h3 class="font-semibold mb-2">{project.data.title}</h3>
+              <h3 class="font-semibold mb-2 text-text dark:text-text-dark">{project.data.title}</h3>
               <p class="text-sm text-text-secondary line-clamp-2 mb-3">{project.data.description}</p>
               <div class="flex flex-wrap gap-1">
                 {project.data.techStack.slice(0, 3).map(tech => (
-                  <span class="text-xs px-2 py-0.5 rounded-full bg-surface dark:bg-surface-dark">
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
                     {tech}
                   </span>
                 ))}
@@ -110,14 +110,14 @@ const projects = (await getCollection('projects'))
 
     <!-- 标签云 -->
     <section>
-      <h2 class="text-2xl font-semibold mb-6">热门标签</h2>
+      <h2 class="text-2xl font-semibold mb-6 text-text dark:text-text-dark">热门标签</h2>
       <div class="flex flex-wrap gap-2">
         {[...new Set([...posts.flatMap(p => p.data.tags), ...notes.flatMap(n => n.data.tags)])]
           .slice(0, 15)
           .map(tag => (
             <a
               href={`/tags/${tag}`}
-              class="px-3 py-1.5 rounded-full bg-surface dark:bg-surface-dark text-text-secondary hover:bg-primary/10 hover:text-primary transition-colors"
+              class="px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
             >
               #{tag}
             </a>

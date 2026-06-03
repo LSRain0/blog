@@ -27,16 +27,16 @@ seriesMap.forEach((seriesNotes, series) => {
 
 <BaseLayout title="笔记" description="物理、数学学习笔记">
   <div class="max-w-4xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-8">学习笔记</h1>
+    <h1 class="text-3xl font-bold mb-8 text-text dark:text-text-dark">学习笔记</h1>
 
     {/* 系列笔记 */}
     {seriesMap.size > 0 && (
       <section class="mb-12">
-        <h2 class="text-2xl font-semibold mb-6">系列笔记</h2>
+        <h2 class="text-2xl font-semibold mb-6 text-text dark:text-text-dark">系列笔记</h2>
         <div class="space-y-8">
           {Array.from(seriesMap.entries()).map(([series, seriesNotes]) => (
             <div class="p-6 rounded-xl border border-border dark:border-border-dark">
-              <h3 class="text-xl font-semibold mb-4">
+              <h3 class="text-xl font-semibold mb-4 text-text dark:text-text-dark">
                 {seriesNotes[0].data.seriesTitle || series}
               </h3>
               <ol class="space-y-2">
@@ -63,7 +63,7 @@ seriesMap.forEach((seriesNotes, series) => {
     {/* 独立笔记 */}
     {standaloneNotes.length > 0 && (
       <section>
-        <h2 class="text-2xl font-semibold mb-6">独立笔记</h2>
+        <h2 class="text-2xl font-semibold mb-6 text-text dark:text-text-dark">独立笔记</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {standaloneNotes.map(note => (
             <a

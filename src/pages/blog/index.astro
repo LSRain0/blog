@@ -11,11 +11,11 @@ const categories = [...new Set(posts.map(p => p.data.category).filter(Boolean))]
 
 <BaseLayout title="博客" description="所有博客文章">
   <div class="max-w-4xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-8">博客文章</h1>
+    <h1 class="text-3xl font-bold mb-8 text-text dark:text-text-dark">博客文章</h1>
 
     {categories.length > 0 && (
       <div class="mb-8">
-        <h2 class="text-lg font-semibold mb-3">分类</h2>
+        <h2 class="text-lg font-semibold mb-3 text-text dark:text-text-dark">分类</h2>
         <div class="flex flex-wrap gap-2">
           {categories.map(category => (
             <span class="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm">
