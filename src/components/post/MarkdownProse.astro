@@ -1,0 +1,89 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['prose', 'prose-lg', 'dark:prose-invert', 'max-w-none', className]}>
+  <slot />
+</div>
+
+<style>
+  .prose {
+    --tw-prose-body: theme('colors.text.DEFAULT');
+    --tw-prose-headings: theme('colors.text.DEFAULT');
+    --tw-prose-links: theme('colors.primary.DEFAULT');
+    --tw-prose-bold: theme('colors.text.DEFAULT');
+    --tw-prose-counters: theme('colors.text.secondary');
+    --tw-prose-bullets: theme('colors.text.secondary');
+    --tw-prose-hr: theme('colors.border.DEFAULT');
+    --tw-prose-quotes: theme('colors.text.secondary');
+    --tw-prose-quote-borders: theme('colors.primary.DEFAULT');
+    --tw-prose-code: theme('colors.primary.DEFAULT');
+    --tw-prose-pre-code: theme('colors.text.dark');
+    --tw-prose-pre-bg: theme('colors.surface.dark');
+    --tw-prose-th-borders: theme('colors.border.DEFAULT');
+    --tw-prose-td-borders: theme('colors.border.DEFAULT');
+  }
+
+  .dark .prose {
+    --tw-prose-body: theme('colors.text.dark');
+    --tw-prose-headings: theme('colors.text.dark');
+    --tw-prose-links: theme('colors.primary.DEFAULT');
+    --tw-prose-bold: theme('colors.text.dark');
+    --tw-prose-counters: theme('colors.text.secondary');
+    --tw-prose-bullets: theme('colors.text.secondary');
+    --tw-prose-hr: theme('colors.border.dark');
+    --tw-prose-quotes: theme('colors.text.secondary');
+    --tw-prose-quote-borders: theme('colors.primary.DEFAULT');
+    --tw-prose-code: theme('colors.primary.DEFAULT');
+    --tw-prose-pre-code: theme('colors.text.dark');
+    --tw-prose-pre-bg: theme('colors.surface.dark');
+    --tw-prose-th-borders: theme('colors.border.dark');
+    --tw-prose-td-borders: theme('colors.border.dark');
+  }
+
+  /* 代码块样式 */
+  .prose :global(pre) {
+    overflow-x: auto;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  /* 行内代码 */
+  .prose :global(:not(pre) > code) {
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+  }
+
+  /* 表格样式 */
+  .prose :global(table) {
+    overflow-x: auto;
+    display: block;
+  }
+
+  /* 数学公式 */
+  .prose :global(.katex-display) {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.5rem 0;
+  }
+
+  /* 图片 */
+  .prose :global(img) {
+    border-radius: 0.5rem;
+  }
+
+  /* 链接 */
+  .prose :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .prose :global(a:hover) {
+    text-decoration-thickness: 2px;
+  }
+</style>

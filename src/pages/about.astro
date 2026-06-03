@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+---
+
+<BaseLayout title="关于" description="关于 LSRain">
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold mb-8">关于我</h1>
+
+    <div class="prose prose-lg dark:prose-invert max-w-none">
+      <p>
+        你好！我是 <strong>LSRain</strong>，一名物理系学生。
+      </p>
+
+      <h2>兴趣方向</h2>
+      <ul>
+        <li><strong>物理学</strong>：经典力学、电磁学、量子力学</li>
+        <li><strong>数学</strong>：数学分析、线性代数、微分方程</li>
+        <li><strong>编程</strong>：Python、Web 开发、数据可视化</li>
+        <li><strong>其他</strong>：阅读、思考、记录</li>
+      </ul>
+
+      <h2>关于这个博客</h2>
+      <p>
+        这是我的个人博客，用于记录学习笔记、项目实践和生活随想。
+        我相信写作是最好的学习方式之一，通过记录和分享，可以帮助自己更好地理解和掌握知识。
+      </p>
+      <p>
+        博客使用 <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> 构建，
+        部署在 <a href="https://vercel.com" target="_blank" rel="noopener noreferrer">Vercel</a> 上。
+      </p>
+
+      <h2>联系方式</h2>
+      <ul>
+        <li>GitHub: <a href="https://github.com/LSRain" target="_blank" rel="noopener noreferrer">@LSRain</a></li>
+        <li>RSS: <a href="/rss.xml">订阅</a></li>
+      </ul>
+
+      <h2>本站技术栈</h2>
+      <ul>
+        <li>Astro - 静态站点生成</li>
+        <li>TypeScript - 类型安全</li>
+        <li>Tailwind CSS - 样式系统</li>
+        <li>KaTeX - 数学公式渲染</li>
+        <li>Shiki - 代码高亮</li>
+      </ul>
+    </div>
+  </div>
+</BaseLayout>

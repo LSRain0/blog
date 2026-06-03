@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { formatDate } from '../utils/date';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// 按年份分组
+const postsByYear = new Map<number, typeof posts>();
+posts.forEach(post => {
+  const year = post.data.pubDate.getFullYear();
+  const existing = postsByYear.get(year) || [];
+  existing.push(post);
+  postsByYear.set(year, existing);
+});
+
+const years = Array.from(postsByYear.keys()).sort((a, b) => b - a);
+---
+
+<BaseLayout title="归档" description="文章归档">
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold mb-8">文章归档</h1>
+    <p class="text-text-secondary mb-8">共 {posts.length} 篇文章</p>
+
+    <div class="space-y-12">
+      {years.map(year => (
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">{year}</h2>
+          <div class="space-y-3">
+            {postsByYear.get(year)?.map(post => (
+              <a
+                href={`/blog/${post.id}`}
+                class="flex items-baseline gap-4 group py-2"
+              >
+                <time
+                  datetime={post.data.pubDate.toISOString()}
+                  class="text-sm text-text-secondary flex-shrink-0 w-20"
+                >
+                  {post.data.pubDate.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
+                </time>
+                <span class="group-hover:text-primary transition-colors">
+                  {post.data.title}
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    {posts.length === 0 && (
+      <p class="text-center text-text-secondary py-12">
+        还没有文章...
+      </p>
+    )}
+  </div>
+</BaseLayout>

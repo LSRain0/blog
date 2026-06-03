@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { formatDate } from '../../utils/date';
+import { calculateReadingTime } from '../../utils/reading-time';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const readingTime = calculateReadingTime(post.body || '');
+
+// 获取上一篇和下一篇文章
+const allPosts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const currentIndex = allPosts.findIndex(p => p.id === post.id);
+const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="max-w-4xl mx-auto px-4 py-12">
+    <header class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">{post.data.title}</h1>
+      <div class="flex flex-wrap items-center gap-3 text-sm text-text-secondary">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {formatDate(post.data.pubDate)}
+        </time>
+        {post.data.updatedDate && (
+          <span class="text-xs">
+            (更新于 {formatDate(post.data.updatedDate)})
+          </span>
+        )}
+        <span>· {readingTime} 分钟阅读</span>
+        {post.data.category && (
+          <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+            {post.data.category}
+          </span>
+        )}
+      </div>
+      {post.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-4">
+          {post.data.tags.map(tag => (
+            <a
+              href={`/tags/${tag}`}
+              class="text-xs px-2 py-1 rounded-full bg-surface dark:bg-surface-dark text-text-secondary hover:bg-primary/10 hover:text-primary transition-colors"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    {headings.length > 0 && (
+      <nav class="mb-8 p-4 rounded-lg bg-surface dark:bg-surface-dark">
+        <h2 class="text-sm font-semibold mb-3">目录</h2>
+        <ul class="space-y-1">
+          {headings.map(heading => (
+            <li style={`padding-left: ${(heading.depth - 1) * 1}rem`}>
+              <a
+                href={`#${heading.slug}`}
+                class="text-sm text-text-secondary hover:text-primary transition-colors"
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+
+    <div class="prose prose-lg dark:prose-invert max-w-none">
+      <Content />
+    </div>
+
+    <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
+      <nav class="flex justify-between">
+        {prevPost && (
+          <a
+            href={`/blog/${prevPost.id}`}
+            class="text-primary hover:text-primary-dark transition-colors"
+          >
+            ← {prevPost.data.title}
+          </a>
+        )}
+        {nextPost && (
+          <a
+            href={`/blog/${nextPost.id}`}
+            class="text-primary hover:text-primary-dark transition-colors ml-auto"
+          >
+            {nextPost.data.title} →
+          </a>
+        )}
+      </nav>
+    </footer>
+  </article>
+</BaseLayout>

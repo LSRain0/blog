@@ -1,0 +1,64 @@
+---
+import { formatDate } from '../../utils/date';
+import { calculateReadingTime } from '../../utils/reading-time';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags: string[];
+  slug: string;
+  body?: string;
+  category?: string;
+}
+
+const { title, description, pubDate, updatedDate, tags, slug, body, category } = Astro.props;
+const readingTime = body ? calculateReadingTime(body) : null;
+---
+
+<article class="group p-6 rounded-xl border border-border dark:border-border-dark bg-background dark:bg-background-dark hover:shadow-lg transition-all duration-300">
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-2 text-sm text-text-secondary">
+      <time datetime={pubDate.toISOString()}>
+        {formatDate(pubDate)}
+      </time>
+      {updatedDate && (
+        <span class="text-xs">
+          (更新于 {formatDate(updatedDate)})
+        </span>
+      )}
+      {readingTime && (
+        <span class="text-xs">· {readingTime} 分钟阅读</span>
+      )}
+      {category && (
+        <span class="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+          {category}
+        </span>
+      )}
+    </div>
+
+    <a href={`/blog/${slug}`} class="block">
+      <h3 class="text-xl font-semibold text-text dark:text-text-dark group-hover:text-primary transition-colors">
+        {title}
+      </h3>
+    </a>
+
+    <p class="text-text-secondary line-clamp-2">
+      {description}
+    </p>
+
+    {tags.length > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {tags.map(tag => (
+          <a
+            href={`/tags/${tag}`}
+            class="text-xs px-2 py-1 rounded-full bg-surface dark:bg-surface-dark text-text-secondary hover:bg-primary/10 hover:text-primary transition-colors"
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+</article>

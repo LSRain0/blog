@@ -1,17 +1,128 @@
 ---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import PostCard from '../components/post/PostCard.astro';
+import { getCollection } from 'astro:content';
 
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 5);
+
+const notes = (await getCollection('notes', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const projects = (await getCollection('projects'))
+  .filter(p => p.data.featured)
+  .slice(0, 3);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="首页">
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <!-- 个人介绍 -->
+    <section class="mb-16">
+      <h1 class="text-4xl font-bold mb-4">
+        你好，我是 <span class="text-primary">LSRain</span>
+      </h1>
+      <p class="text-xl text-text-secondary max-w-2xl">
+        物理系学生，热爱数学、编程和探索世界的本质。这里记录我的学习笔记、项目实践和生活随想。
+      </p>
+    </section>
+
+    <!-- 最新文章 -->
+    <section class="mb-16">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold">最新文章</h2>
+        <a href="/blog" class="text-primary hover:text-primary-dark transition-colors">
+          查看全部 →
+        </a>
+      </div>
+      <div class="space-y-4">
+        {posts.map(post => (
+          <PostCard
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            updatedDate={post.data.updatedDate}
+            tags={post.data.tags}
+            slug={post.id}
+            body={post.body}
+            category={post.data.category}
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- 最新笔记 -->
+    <section class="mb-16">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold">最新笔记</h2>
+        <a href="/notes" class="text-primary hover:text-primary-dark transition-colors">
+          查看全部 →
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {notes.map(note => (
+          <a
+            href={`/notes/${note.id}`}
+            class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
+          >
+            <h3 class="font-semibold mb-2">{note.data.title}</h3>
+            <p class="text-sm text-text-secondary line-clamp-2">{note.data.description}</p>
+            {note.data.series && (
+              <span class="inline-block mt-2 text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                {note.data.seriesTitle || note.data.series}
+              </span>
+            )}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- 项目展示 -->
+    {projects.length > 0 && (
+      <section class="mb-16">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-semibold">项目展示</h2>
+          <a href="/projects" class="text-primary hover:text-primary-dark transition-colors">
+            查看全部 →
+          </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {projects.map(project => (
+            <a
+              href={`/projects/${project.id}`}
+              class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
+            >
+              <h3 class="font-semibold mb-2">{project.data.title}</h3>
+              <p class="text-sm text-text-secondary line-clamp-2 mb-3">{project.data.description}</p>
+              <div class="flex flex-wrap gap-1">
+                {project.data.techStack.slice(0, 3).map(tech => (
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-surface dark:bg-surface-dark">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- 标签云 -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-6">热门标签</h2>
+      <div class="flex flex-wrap gap-2">
+        {[...new Set([...posts.flatMap(p => p.data.tags), ...notes.flatMap(n => n.data.tags)])]
+          .slice(0, 15)
+          .map(tag => (
+            <a
+              href={`/tags/${tag}`}
+              class="px-3 py-1.5 rounded-full bg-surface dark:bg-surface-dark text-text-secondary hover:bg-primary/10 hover:text-primary transition-colors"
+            >
+              #{tag}
+            </a>
+          ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

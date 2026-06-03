@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const notes = (await getCollection('notes', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// 按系列分组
+const seriesMap = new Map<string, typeof notes>();
+const standaloneNotes: typeof notes = [];
+
+notes.forEach(note => {
+  if (note.data.series) {
+    const existing = seriesMap.get(note.data.series) || [];
+    existing.push(note);
+    seriesMap.set(note.data.series, existing);
+  } else {
+    standaloneNotes.push(note);
+  }
+});
+
+// 对每个系列内的笔记按 order 排序
+seriesMap.forEach((seriesNotes, series) => {
+  seriesMap.set(series, seriesNotes.sort((a, b) => (a.data.order || 0) - (b.data.order || 0)));
+});
+---
+
+<BaseLayout title="笔记" description="物理、数学学习笔记">
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold mb-8">学习笔记</h1>
+
+    {/* 系列笔记 */}
+    {seriesMap.size > 0 && (
+      <section class="mb-12">
+        <h2 class="text-2xl font-semibold mb-6">系列笔记</h2>
+        <div class="space-y-8">
+          {Array.from(seriesMap.entries()).map(([series, seriesNotes]) => (
+            <div class="p-6 rounded-xl border border-border dark:border-border-dark">
+              <h3 class="text-xl font-semibold mb-4">
+                {seriesNotes[0].data.seriesTitle || series}
+              </h3>
+              <ol class="space-y-2">
+                {seriesNotes.map((note, index) => (
+                  <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-sm flex items-center justify-center">
+                      {note.data.order || index + 1}
+                    </span>
+                    <a
+                      href={`/notes/${note.id}`}
+                      class="text-text dark:text-text-dark hover:text-primary transition-colors"
+                    >
+                      {note.data.title}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* 独立笔记 */}
+    {standaloneNotes.length > 0 && (
+      <section>
+        <h2 class="text-2xl font-semibold mb-6">独立笔记</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {standaloneNotes.map(note => (
+            <a
+              href={`/notes/${note.id}`}
+              class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
+            >
+              <h3 class="font-semibold mb-2">{note.data.title}</h3>
+              <p class="text-sm text-text-secondary line-clamp-2">{note.data.description}</p>
+              <div class="flex items-center gap-2 mt-3 text-xs text-text-secondary">
+                <time datetime={note.data.pubDate.toISOString()}>
+                  {note.data.pubDate.toLocaleDateString('zh-CN')}
+                </time>
+                {note.data.tags.length > 0 && (
+                  <span>· {note.data.tags[0]}</span>
+                )}
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {notes.length === 0 && (
+      <p class="text-center text-text-secondary py-12">
+        还没有笔记，敬请期待...
+      </p>
+    )}
+  </div>
+</BaseLayout>
