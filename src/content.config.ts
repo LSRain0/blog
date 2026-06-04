@@ -12,7 +12,6 @@ const posts = defineCollection({
     category: z.string().optional(),
     draft: z.boolean().default(false),
     cover: z.string().optional(),
-    math: z.boolean().default(false),
   }),
 });
 
@@ -27,7 +26,6 @@ const notes = defineCollection({
     category: z.string().optional(),
     draft: z.boolean().default(false),
     cover: z.string().optional(),
-    math: z.boolean().default(true),
     series: z.string().optional(),
     seriesTitle: z.string().optional(),
     order: z.number().optional(),

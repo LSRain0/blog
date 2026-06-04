@@ -4,7 +4,6 @@ description: "理解电磁学的核心——麦克斯韦方程组的积分形式
 pubDate: 2026-06-03
 tags: ["物理", "电磁学", "麦克斯韦"]
 category: "physics"
-math: true
 series: "electromagnetism"
 seriesTitle: "电磁学"
 order: 1

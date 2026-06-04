@@ -4,7 +4,6 @@ description: "这是我的第一篇博客文章，记录一下搭建博客的过
 pubDate: 2026-06-03
 tags: ["博客", "随笔"]
 category: "生活"
-math: false
 ---
 
 ## 为什么要写博客？

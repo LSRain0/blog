@@ -4,7 +4,6 @@ description: "从最小作用量原理理解拉格朗日方程，建立分析力
 pubDate: 2026-06-03
 tags: ["物理", "力学", "分析力学"]
 category: "physics"
-math: true
 series: "classical-mechanics"
 seriesTitle: "经典力学"
 order: 1

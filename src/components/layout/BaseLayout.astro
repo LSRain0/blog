@@ -38,13 +38,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css" />
 
     <title>{title} | LSRain的小屋</title>
 
     <script is:inline>
-      // 初始化主题
-      const theme = localStorage.getItem('theme') || 'light';
+      // 初始化主题:无存储值时跟随系统偏好
+      const theme = localStorage.getItem('theme');
       if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
       }
