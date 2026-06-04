@@ -12,14 +12,15 @@ const projects = (await getCollection('projects'))
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {projects.map(project => (
-        <a
-          href={`/projects/${project.id}`}
+        <div
           class="group p-6 rounded-xl border border-border dark:border-border-dark hover:shadow-lg transition-all duration-300"
         >
           <div class="flex items-start justify-between mb-3">
-            <h2 class="text-xl font-semibold text-text dark:text-text-dark group-hover:text-primary transition-colors">
-              {project.data.title}
-            </h2>
+            <a href={`/projects/${project.id}`}>
+              <h2 class="text-xl font-semibold text-text dark:text-text-dark group-hover:text-primary transition-colors">
+                {project.data.title}
+              </h2>
+            </a>
             {project.data.featured && (
               <span class="px-2 py-0.5 rounded-full bg-accent/10 text-accent text-xs">
                 精选
@@ -41,17 +42,27 @@ const projects = (await getCollection('projects'))
 
           <div class="flex items-center gap-3 text-sm">
             {project.data.github && (
-              <span class="text-text-secondary hover:text-primary transition-colors">
-                GitHub →
-              </span>
+              <a
+                href={project.data.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-text-secondary hover:text-primary transition-colors"
+              >
+                GitHub &rarr;
+              </a>
             )}
             {project.data.demo && (
-              <span class="text-text-secondary hover:text-primary transition-colors">
-                Demo →
-              </span>
+              <a
+                href={project.data.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-text-secondary hover:text-primary transition-colors"
+              >
+                Demo &rarr;
+              </a>
             )}
           </div>
-        </a>
+        </div>
       ))}
     </div>
 

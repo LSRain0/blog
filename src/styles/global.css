@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -41,11 +42,12 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/backgrounds/bg.jpg');
+  background-image: var(--bg-image, url('/backgrounds/bg-1.jpg'));
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   z-index: -2;
+  transition: background-image 0.5s ease;
 }
 
 /* 浅色模式蒙版 - 白色半透明 */
@@ -79,6 +81,22 @@ main > article {
 .dark main > div,
 .dark main > article {
   background-color: rgba(17, 24, 39, 0.85);
+}
+
+/* 深色模式 prose 文字颜色 */
+.dark .prose {
+  --tw-prose-body: #e5e7eb;
+  --tw-prose-headings: #f9fafb;
+  --tw-prose-links: #60a5fa;
+  --tw-prose-bold: #f9fafb;
+  --tw-prose-counters: #9ca3af;
+  --tw-prose-bullets: #9ca3af;
+  --tw-prose-quotes: #e5e7eb;
+  --tw-prose-quote-borders: #374151;
+  --tw-prose-code: #f9fafb;
+  --tw-prose-pre-bg: #1f2937;
+  --tw-prose-th-borders: #4b5563;
+  --tw-prose-td-borders: #374151;
 }
 
 /* KaTeX 公式样式 */

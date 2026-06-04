@@ -38,6 +38,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css" />
 
     <title>{title} | LSRain的小屋</title>
 
@@ -47,6 +48,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
       }
+
+      // 初始化背景图片
+      (function() {
+        var BG_COUNT = 17;
+        var saved = localStorage.getItem('bg-index');
+        var idx;
+        if (saved !== null) {
+          idx = parseInt(saved, 10);
+        } else {
+          idx = Math.floor(Math.random() * BG_COUNT) + 1;
+          localStorage.setItem('bg-index', idx);
+        }
+        document.documentElement.style.setProperty('--bg-image', "url('/backgrounds/bg-" + idx + ".jpg')");
+      })();
     </script>
   </head>
   <body class="min-h-screen flex flex-col">

@@ -6,42 +6,91 @@ import { formatDate } from '../utils/date';
 const posts = (await getCollection('posts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-// 按年份分组
-const postsByYear = new Map<number, typeof posts>();
-posts.forEach(post => {
-  const year = post.data.pubDate.getFullYear();
-  const existing = postsByYear.get(year) || [];
-  existing.push(post);
-  postsByYear.set(year, existing);
+const notes = (await getCollection('notes', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// 合并所有内容并按年份分组
+interface ArchiveItem {
+  id: string;
+  title: string;
+  pubDate: Date;
+  type: 'post' | 'note';
+  series?: string;
+  seriesTitle?: string;
+}
+
+const allItems: ArchiveItem[] = [
+  ...posts.map(p => ({
+    id: p.id,
+    title: p.data.title,
+    pubDate: p.data.pubDate,
+    type: 'post' as const,
+  })),
+  ...notes.map(n => ({
+    id: n.id,
+    title: n.data.title,
+    pubDate: n.data.pubDate,
+    type: 'note' as const,
+    series: n.data.series,
+    seriesTitle: n.data.seriesTitle,
+  })),
+].sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+const itemsByYear = new Map<number, ArchiveItem[]>();
+allItems.forEach(item => {
+  const year = item.pubDate.getFullYear();
+  const existing = itemsByYear.get(year) || [];
+  existing.push(item);
+  itemsByYear.set(year, existing);
 });
 
-const years = Array.from(postsByYear.keys()).sort((a, b) => b - a);
+const years = Array.from(itemsByYear.keys()).sort((a, b) => b - a);
 ---
 
-<BaseLayout title="归档" description="文章归档">
+<BaseLayout title="归档" description="文章和笔记归档">
   <div class="max-w-4xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-8">文章归档</h1>
-    <p class="text-text-secondary mb-8">共 {posts.length} 篇文章</p>
+    <h1 class="text-3xl font-bold mb-2 text-text dark:text-text-dark">归档</h1>
+    <p class="text-text-secondary mb-8">共 {posts.length} 篇文章，{notes.length} 篇笔记</p>
+
+    <div class="flex gap-4 mb-8 text-sm">
+      <span class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-primary"></span>
+        文章
+      </span>
+      <span class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-accent"></span>
+        笔记
+      </span>
+    </div>
 
     <div class="space-y-12">
       {years.map(year => (
         <section>
-          <h2 class="text-2xl font-semibold mb-4">{year}</h2>
+          <h2 class="text-2xl font-semibold mb-4 text-text dark:text-text-dark">{year}</h2>
           <div class="space-y-3">
-            {postsByYear.get(year)?.map(post => (
+            {itemsByYear.get(year)?.map(item => (
               <a
-                href={`/blog/${post.id}`}
+                href={item.type === 'post' ? `/blog/${item.id}` : `/notes/${item.id}`}
                 class="flex items-baseline gap-4 group py-2"
               >
                 <time
-                  datetime={post.data.pubDate.toISOString()}
+                  datetime={item.pubDate.toISOString()}
                   class="text-sm text-text-secondary flex-shrink-0 w-20"
                 >
-                  {post.data.pubDate.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
+                  {item.pubDate.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
                 </time>
-                <span class="group-hover:text-primary transition-colors">
-                  {post.data.title}
+                <span class:list={[
+                  'w-2 h-2 rounded-full flex-shrink-0',
+                  item.type === 'post' ? 'bg-primary' : 'bg-accent',
+                ]} />
+                <span class="group-hover:text-primary transition-colors text-text dark:text-text-dark">
+                  {item.title}
                 </span>
+                {item.seriesTitle && (
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+                    {item.seriesTitle}
+                  </span>
+                )}
               </a>
             ))}
           </div>
@@ -49,9 +98,9 @@ const years = Array.from(postsByYear.keys()).sort((a, b) => b - a);
       ))}
     </div>
 
-    {posts.length === 0 && (
+    {allItems.length === 0 && (
       <p class="text-center text-text-secondary py-12">
-        还没有文章...
+        还没有内容...
       </p>
     )}
   </div>

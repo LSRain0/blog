@@ -14,26 +14,44 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft))
 const projects = (await getCollection('projects'))
   .filter(p => p.data.featured)
   .slice(0, 3);
+
+const allTags = [...new Set([...posts.flatMap(p => p.data.tags), ...notes.flatMap(n => n.data.tags)])];
 ---
 
 <BaseLayout title="首页">
   <div class="max-w-4xl mx-auto px-4 py-12">
-    <!-- 个人介绍 -->
+    <!-- Hero 区域 -->
     <section class="mb-16">
-      <h1 class="text-4xl font-bold mb-4 text-text dark:text-text-dark">
-        你好，我是 <span class="text-primary">LSRain</span>
-      </h1>
-      <p class="text-xl text-text-secondary max-w-2xl">
-        物理系学生，热爱数学、编程和探索世界的本质。这里记录我的学习笔记、项目实践和生活随想。
-      </p>
+      <div class="p-8 md:p-12 rounded-2xl bg-surface dark:bg-surface-dark border border-border dark:border-border-dark">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-text dark:text-text-dark">
+          你好，我是 <span class="text-primary">LSRain</span>
+        </h1>
+        <p class="text-lg md:text-xl text-text-secondary max-w-2xl mb-8">
+          物理系学生，热爱数学、编程和探索世界的本质。这里记录我的学习笔记、项目实践和生活随想。
+        </p>
+
+        <!-- 搜索入口 -->
+        <a
+          href="/search"
+          class="inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-background dark:bg-background-dark border border-border dark:border-border-dark text-text-secondary hover:border-primary hover:text-primary transition-all group"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <span>搜索文章和笔记...</span>
+          <kbd class="hidden md:inline-flex ml-4 px-2 py-0.5 text-xs rounded bg-surface dark:bg-surface-dark border border-border dark:border-border-dark text-text-secondary">
+            /
+          </kbd>
+        </a>
+      </div>
     </section>
 
     <!-- 最新文章 -->
     <section class="mb-16">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-semibold text-text dark:text-text-dark">最新文章</h2>
-        <a href="/blog" class="text-primary hover:text-primary-dark transition-colors">
-          查看全部 →
+        <a href="/blog" class="text-sm text-primary hover:text-primary-dark transition-colors">
+          查看全部 &rarr;
         </a>
       </div>
       <div class="space-y-4">
@@ -56,23 +74,32 @@ const projects = (await getCollection('projects'))
     <section class="mb-16">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-semibold text-text dark:text-text-dark">最新笔记</h2>
-        <a href="/notes" class="text-primary hover:text-primary-dark transition-colors">
-          查看全部 →
+        <a href="/notes" class="text-sm text-primary hover:text-primary-dark transition-colors">
+          查看全部 &rarr;
         </a>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {notes.map(note => (
           <a
             href={`/notes/${note.id}`}
-            class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
+            class="group p-5 rounded-xl border border-border dark:border-border-dark bg-background dark:bg-background-dark hover:shadow-lg transition-all duration-300"
           >
-            <h3 class="font-semibold mb-2 text-text dark:text-text-dark">{note.data.title}</h3>
-            <p class="text-sm text-text-secondary line-clamp-2">{note.data.description}</p>
-            {note.data.series && (
-              <span class="inline-block mt-2 text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                {note.data.seriesTitle || note.data.series}
-              </span>
-            )}
+            <h3 class="font-semibold mb-2 text-text dark:text-text-dark group-hover:text-primary transition-colors">
+              {note.data.title}
+            </h3>
+            <p class="text-sm text-text-secondary line-clamp-2 mb-3">{note.data.description}</p>
+            <div class="flex items-center gap-2">
+              {note.data.series && (
+                <span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+                  {note.data.seriesTitle || note.data.series}
+                </span>
+              )}
+              {note.data.tags.slice(0, 2).map(tag => (
+                <span class="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                  #{tag}
+                </span>
+              ))}
+            </div>
           </a>
         ))}
       </div>
@@ -83,17 +110,19 @@ const projects = (await getCollection('projects'))
       <section class="mb-16">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-2xl font-semibold text-text dark:text-text-dark">项目展示</h2>
-          <a href="/projects" class="text-primary hover:text-primary-dark transition-colors">
-            查看全部 →
+          <a href="/projects" class="text-sm text-primary hover:text-primary-dark transition-colors">
+            查看全部 &rarr;
           </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {projects.map(project => (
             <a
               href={`/projects/${project.id}`}
-              class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
+              class="group p-5 rounded-xl border border-border dark:border-border-dark bg-background dark:bg-background-dark hover:shadow-lg transition-all duration-300"
             >
-              <h3 class="font-semibold mb-2 text-text dark:text-text-dark">{project.data.title}</h3>
+              <h3 class="font-semibold mb-2 text-text dark:text-text-dark group-hover:text-primary transition-colors">
+                {project.data.title}
+              </h3>
               <p class="text-sm text-text-secondary line-clamp-2 mb-3">{project.data.description}</p>
               <div class="flex flex-wrap gap-1">
                 {project.data.techStack.slice(0, 3).map(tech => (
@@ -109,20 +138,30 @@ const projects = (await getCollection('projects'))
     )}
 
     <!-- 标签云 -->
-    <section>
-      <h2 class="text-2xl font-semibold mb-6 text-text dark:text-text-dark">热门标签</h2>
-      <div class="flex flex-wrap gap-2">
-        {[...new Set([...posts.flatMap(p => p.data.tags), ...notes.flatMap(n => n.data.tags)])]
-          .slice(0, 15)
-          .map(tag => (
+    {allTags.length > 0 && (
+      <section>
+        <h2 class="text-2xl font-semibold mb-6 text-text dark:text-text-dark">热门标签</h2>
+        <div class="flex flex-wrap gap-2">
+          {allTags.slice(0, 15).map(tag => (
             <a
               href={`/tags/${tag}`}
-              class="px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+              class="px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm"
             >
               #{tag}
             </a>
           ))}
-      </div>
-    </section>
+        </div>
+      </section>
+    )}
   </div>
 </BaseLayout>
+
+<script>
+  // 快捷键 "/" 跳转搜索
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
+      e.preventDefault();
+      window.location.href = '/search';
+    }
+  });
+</script>

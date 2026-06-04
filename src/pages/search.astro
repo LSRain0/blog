@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+---
+
+<BaseLayout title="搜索" description="搜索博客文章和笔记">
+  <div class="max-w-4xl mx-auto px-4 py-12" data-pagefind-noindex>
+    <h1 class="text-3xl font-bold mb-8 text-text dark:text-text-dark">搜索</h1>
+
+    <div class="mb-8">
+      <div class="relative">
+        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          id="search-input"
+          type="text"
+          placeholder="输入关键词搜索文章和笔记..."
+          class="w-full pl-12 pr-4 py-3 rounded-xl border border-border dark:border-border-dark bg-background dark:bg-background-dark text-text dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+          autofocus
+        />
+      </div>
+    </div>
+
+    <div id="search-results" class="space-y-4">
+      <p class="text-text-secondary text-center py-8">输入关键词开始搜索</p>
+    </div>
+
+    <div id="no-results" class="hidden text-center py-8">
+      <p class="text-text-secondary">没有找到相关内容</p>
+    </div>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', async () => {
+    const pagefind = await import('/pagefind/pagefind.js');
+    await pagefind.init();
+
+    const input = document.getElementById('search-input');
+    const resultsContainer = document.getElementById('search-results');
+    const noResults = document.getElementById('no-results');
+    let debounceTimer;
+
+    input.addEventListener('input', (e) => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => search(e.target.value), 300);
+    });
+
+    async function search(query) {
+      if (!query.trim()) {
+        resultsContainer.innerHTML = '<p class="text-text-secondary text-center py-8">输入关键词开始搜索</p>';
+        noResults.classList.add('hidden');
+        return;
+      }
+
+      const results = await pagefind.search(query);
+
+      if (results.results.length === 0) {
+        resultsContainer.innerHTML = '';
+        noResults.classList.remove('hidden');
+        return;
+      }
+
+      noResults.classList.add('hidden');
+      const html = [];
+
+      for (const result of results.results.slice(0, 10)) {
+        const data = await result.data();
+        html.push(`
+          <a href="${data.url}" class="block p-6 rounded-xl border border-border dark:border-border-dark bg-background dark:bg-background-dark hover:shadow-lg transition-all duration-300">
+            <h3 class="text-lg font-semibold text-text dark:text-text-dark mb-2">${data.meta?.title || '无标题'}</h3>
+            <p class="text-sm text-text-secondary line-clamp-3">${data.excerpt}</p>
+          </a>
+        `);
+      }
+
+      resultsContainer.innerHTML = html.join('');
+    }
+  });
+</script>

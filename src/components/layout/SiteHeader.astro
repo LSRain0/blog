@@ -4,10 +4,17 @@ const navItems = [
   { href: '/blog', label: '博客' },
   { href: '/notes', label: '笔记' },
   { href: '/projects', label: '项目' },
+  { href: '/archive', label: '归档' },
   { href: '/about', label: '关于' },
+  { href: '/search', label: '搜索' },
 ];
 
-const currentPath = Astro.url.pathname;
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath === href || currentPath.startsWith(href + '/');
+}
 ---
 
 <header class="sticky top-0 z-50 bg-background/80 dark:bg-background-dark/80 backdrop-blur-sm border-b border-border dark:border-border-dark">
@@ -24,7 +31,7 @@ const currentPath = Astro.url.pathname;
               href={item.href}
               class:list={[
                 'text-sm font-medium transition-colors hover:text-primary',
-                currentPath === item.href || currentPath.startsWith(item.href + '/')
+                isActive(item.href)
                   ? 'text-primary'
                   : 'text-text-secondary dark:text-text-secondary'
               ]}
@@ -34,6 +41,17 @@ const currentPath = Astro.url.pathname;
           </li>
         ))}
       </ul>
+
+      <button
+        id="bg-toggle"
+        class="p-2 rounded-lg hover:bg-surface dark:hover:bg-surface-dark transition-colors"
+        aria-label="切换背景图片"
+        title="切换背景"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </button>
 
       <button
         id="theme-toggle"
@@ -69,7 +87,7 @@ const currentPath = Astro.url.pathname;
             href={item.href}
             class:list={[
               'block py-2 px-4 rounded-lg text-sm font-medium transition-colors',
-              currentPath === item.href || currentPath.startsWith(item.href + '/')
+              isActive(item.href)
                 ? 'bg-primary/10 text-primary'
                 : 'hover:bg-surface dark:hover:bg-surface-dark'
             ]}
@@ -91,6 +109,19 @@ const currentPath = Astro.url.pathname;
     themeToggle.addEventListener('click', () => {
       html.classList.toggle('dark');
       localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+  }
+
+  // 背景切换
+  const bgToggle = document.getElementById('bg-toggle');
+  const BG_COUNT = 17;
+
+  if (bgToggle) {
+    bgToggle.addEventListener('click', () => {
+      let current = parseInt(localStorage.getItem('bg-index') || '1', 10);
+      let next = current % BG_COUNT + 1;
+      localStorage.setItem('bg-index', String(next));
+      document.documentElement.style.setProperty('--bg-image', `url('/backgrounds/bg-${next}.jpg')`);
     });
   }
 
