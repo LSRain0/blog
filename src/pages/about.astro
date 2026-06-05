@@ -4,21 +4,63 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
 
 <BaseLayout title="关于" description="关于 LSRain">
   <div class="max-w-4xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-8">关于我</h1>
+    <!-- 头部区域 -->
+    <div class="mb-12 p-8 rounded-2xl bg-surface dark:bg-surface-dark border border-border dark:border-border-dark">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4 text-text dark:text-text-dark">
+        关于我
+      </h1>
+      <p class="text-lg text-text-secondary max-w-2xl">
+        一名物理系学生，热爱数学、编程和探索世界的本质。
+        相信写作是最好的学习方式之一。
+      </p>
+    </div>
 
     <div class="prose prose-lg dark:prose-invert max-w-none">
+      <h2>个人简介</h2>
       <p>
-        你好！我是 <strong>LSRain</strong>，一名物理系学生 From Zhejiang University。
+        你好！我是 <strong>LSRain</strong>，一名物理系学生。
+        我对自然科学和计算机技术都有浓厚的兴趣，喜欢用编程的思维去理解物理，也喜欢用物理的直觉去思考问题。
       </p>
 
-      <h2>兴趣方向</h2>
-      <ul>
-        <li><strong>物理</strong>：经典力学、电磁学、热学、量子力学...</li>
-        <li><strong>数学</strong>：数学分析、线性代数、微分方程、几何...</li>
-        <li><strong>计算机科学与技术</strong>：Python、C++、Web 开发、数据可视化...</li>
-        <li><strong>AI 相关</strong>：Vibe Coding, PyTorch, AI Agent, AI for Science...</li>
-        <li><strong>其他</strong>：阅读、思考、记录随笔</li>
-      </ul>
+      <h2>学习方向</h2>
+      <div class="not-prose grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+        <div class="p-4 rounded-xl border border-border dark:border-border-dark">
+          <h3 class="font-semibold mb-2 text-primary">物理学</h3>
+          <ul class="text-sm text-text-secondary space-y-1">
+            <li>经典力学与分析力学</li>
+            <li>电磁学</li>
+            <li>热学与统计力学</li>
+            <li>量子力学</li>
+          </ul>
+        </div>
+        <div class="p-4 rounded-xl border border-border dark:border-border-dark">
+          <h3 class="font-semibold mb-2 text-primary">数学</h3>
+          <ul class="text-sm text-text-secondary space-y-1">
+            <li>数学分析</li>
+            <li>线性代数</li>
+            <li>微分方程</li>
+            <li>概率论与数理统计</li>
+          </ul>
+        </div>
+        <div class="p-4 rounded-xl border border-border dark:border-border-dark">
+          <h3 class="font-semibold mb-2 text-primary">计算机科学</h3>
+          <ul class="text-sm text-text-secondary space-y-1">
+            <li>Python / C++</li>
+            <li>Web 开发</li>
+            <li>数据可视化</li>
+            <li>算法与数据结构</li>
+          </ul>
+        </div>
+        <div class="p-4 rounded-xl border border-border dark:border-border-dark">
+          <h3 class="font-semibold mb-2 text-primary">AI 相关</h3>
+          <ul class="text-sm text-text-secondary space-y-1">
+            <li>Vibe Coding</li>
+            <li>PyTorch</li>
+            <li>AI Agent</li>
+            <li>AI for Science</li>
+          </ul>
+        </div>
+      </div>
 
       <h2>关于这个博客</h2>
       <p>
@@ -26,23 +68,39 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
         我相信写作是最好的学习方式之一，通过记录和分享，可以更好地理解、掌握乃至传播知识。
       </p>
       <p>
-        博客使用 <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> 构建，
-        部署在 <a href="https://www.cloudflare-cn.com" target="_blank" rel="noopener noreferrer">Cloudflare</a> 上。
+        博客主要包含以下内容：
       </p>
+      <ul>
+        <li><strong>博客文章</strong>：编程记录、技术分享、生活随想</li>
+        <li><strong>学习笔记</strong>：物理、数学等学科的系统化笔记</li>
+        <li><strong>项目展示</strong>：个人项目的设计思路和技术实现</li>
+      </ul>
+
+      <h2>技术栈</h2>
+      <p>这个博客使用以下技术构建：</p>
+      <ul>
+        <li><a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> — 静态站点生成框架</li>
+        <li><a href="https://www.typescriptlang.org" target="_blank" rel="noopener noreferrer">TypeScript</a> — 类型安全</li>
+        <li><a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer">Tailwind CSS</a> — 样式系统</li>
+        <li><a href="https://katex.org" target="_blank" rel="noopener noreferrer">KaTeX</a> — 数学公式渲染</li>
+        <li><a href="https://shiki.style" target="_blank" rel="noopener noreferrer">Shiki</a> — 代码高亮</li>
+        <li><a href="https://pagefind.app" target="_blank" rel="noopener noreferrer">Pagefind</a> — 静态全文搜索</li>
+      </ul>
 
       <h2>联系方式</h2>
       <ul>
         <li>GitHub: <a href="https://github.com/LSRain0" target="_blank" rel="noopener noreferrer">@LSRain0</a></li>
+        <li>RSS: <a href="/rss.xml">订阅</a></li>
       </ul>
 
-      <h2>本站技术栈</h2>
-      <ul>
-        <li>Astro - 静态站点生成</li>
-        <li>TypeScript - 类型安全</li>
-        <li>Tailwind CSS - 样式系统</li>
-        <li>KaTeX - 数学公式渲染</li>
-        <li>Shiki - 代码高亮</li>
-      </ul>
+      <h2>关于内容</h2>
+      <p>
+        博客中的笔记和文章都是我个人学习过程的记录。如果发现错误，欢迎通过 GitHub 联系我。
+      </p>
+      <p>
+        本站内容遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a> 协议，
+        转载请注明出处。
+      </p>
     </div>
   </div>
 </BaseLayout>
