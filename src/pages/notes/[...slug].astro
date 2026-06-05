@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../components/layout/BaseLayout.astro';
+import MarkdownProse from '../../components/post/MarkdownProse.astro';
+import TableOfContents from '../../components/post/TableOfContents.astro';
 import { getCollection, render } from 'astro:content';
 import { formatDate } from '../../utils/date';
 
@@ -89,27 +91,11 @@ const nextNote = currentIndex < seriesNotes.length - 1 ? seriesNotes[currentInde
           )}
         </header>
 
-        {headings.length > 0 && (
-          <nav class="mb-8 p-4 rounded-lg bg-surface dark:bg-surface-dark">
-            <h2 class="text-sm font-semibold mb-3">目录</h2>
-            <ul class="space-y-1">
-              {headings.map(heading => (
-                <li style={`padding-left: ${(heading.depth - 1) * 1}rem`}>
-                  <a
-                    href={`#${heading.slug}`}
-                    class="text-sm text-text-secondary hover:text-primary transition-colors"
-                  >
-                    {heading.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
+        <TableOfContents headings={headings} />
 
-        <div class="prose prose-lg dark:prose-invert max-w-none" data-pagefind-body>
+        <MarkdownProse data-pagefind-body>
           <Content />
-        </div>
+        </MarkdownProse>
 
         <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
           <nav class="flex justify-between">

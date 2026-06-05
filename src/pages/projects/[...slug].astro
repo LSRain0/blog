@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../components/layout/BaseLayout.astro';
+import MarkdownProse from '../../components/post/MarkdownProse.astro';
 import { getCollection, render } from 'astro:content';
 import { formatDate } from '../../utils/date';
 
@@ -13,6 +14,13 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
+
+// 获取上一个和下一个项目
+const allProjects = (await getCollection('projects'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const currentIndex = allProjects.findIndex(p => p.id === project.id);
+const prevProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null;
+const nextProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
 ---
 
 <BaseLayout title={project.data.title} description={project.data.description}>
@@ -66,17 +74,39 @@ const { Content } = await render(project);
       )}
     </header>
 
-    <div class="prose prose-lg dark:prose-invert max-w-none" data-pagefind-body>
+    <MarkdownProse data-pagefind-body>
       <Content />
-    </div>
+    </MarkdownProse>
 
     <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
-      <a
-        href="/projects"
-        class="text-primary hover:text-primary-dark transition-colors"
-      >
-        ← 返回项目列表
-      </a>
+      <nav class="flex justify-between items-center">
+        <div>
+          {prevProject && (
+            <a
+              href={`/projects/${prevProject.id}`}
+              class="text-primary hover:text-primary-dark transition-colors"
+            >
+              ← {prevProject.data.title}
+            </a>
+          )}
+        </div>
+        <a
+          href="/projects"
+          class="text-text-secondary hover:text-primary transition-colors"
+        >
+          返回项目列表
+        </a>
+        <div>
+          {nextProject && (
+            <a
+              href={`/projects/${nextProject.id}`}
+              class="text-primary hover:text-primary-dark transition-colors"
+            >
+              {nextProject.data.title} →
+            </a>
+          )}
+        </div>
+      </nav>
     </footer>
   </article>
 </BaseLayout>

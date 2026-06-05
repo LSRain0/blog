@@ -1,0 +1,74 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+---
+
+{headings.length > 0 && (
+  <nav class="toc mb-8 p-4 rounded-lg bg-surface dark:bg-surface-dark">
+    <h2 class="text-sm font-semibold mb-3">目录</h2>
+    <ul class="space-y-1">
+      {headings.map(heading => (
+        <li style={`padding-left: ${(heading.depth - 1) * 1}rem`}>
+          <a
+            href={`#${heading.slug}`}
+            class="toc-link block text-sm text-text-secondary hover:text-primary transition-colors py-0.5"
+            data-target={heading.slug}
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<script>
+  function initTOC() {
+    const links = document.querySelectorAll<HTMLAnchorElement>('.toc-link');
+    if (links.length === 0) return;
+
+    const headingIds = Array.from(links).map(link => link.dataset.target!);
+    const headings = headingIds
+      .map(id => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    if (headings.length === 0) return;
+
+    function updateActiveLink() {
+      const scrollY = window.scrollY + 100;
+
+      let activeId = headingIds[0];
+      for (const heading of headings) {
+        if (heading.offsetTop <= scrollY) {
+          activeId = heading.id;
+        }
+      }
+
+      links.forEach(link => {
+        if (link.dataset.target === activeId) {
+          link.classList.add('text-primary', 'font-medium');
+          link.classList.remove('text-text-secondary');
+        } else {
+          link.classList.remove('text-primary', 'font-medium');
+          link.classList.add('text-text-secondary');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveLink, { passive: true });
+    updateActiveLink();
+  }
+
+  // 页面加载和 Astro 页面切换时初始化
+  document.addEventListener('astro:page-load', initTOC);
+  initTOC();
+</script>

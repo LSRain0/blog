@@ -8,6 +8,12 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft))
 
 const categories = [...new Set(posts.map(p => p.data.category).filter(Boolean))];
 const allTags = [...new Set(posts.flatMap(p => p.data.tags))];
+
+// 分页配置
+const POSTS_PER_PAGE = 10;
+const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+const currentPage = 1;
+const paginatedPosts = posts.slice(0, POSTS_PER_PAGE);
 ---
 
 <BaseLayout title="博客" description="所有博客文章">
@@ -59,7 +65,7 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))];
     )}
 
     <div id="posts-container" class="space-y-4">
-      {posts.map(post => (
+      {paginatedPosts.map(post => (
         <div
           class="post-item"
           data-category={post.data.category || ''}
@@ -84,10 +90,52 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))];
     </div>
 
     {posts.length === 0 && (
-      <p class="text-center text-text-secondary py-12">
+      <p class="center text-text-secondary py-12">
         还没有文章，敬请期待...
       </p>
     )}
+
+    {/* 分页导航 */}
+    {totalPages > 1 && (
+      <nav class="mt-12 flex justify-center items-center gap-2" aria-label="分页导航">
+        {currentPage > 1 && (
+          <a
+            href={currentPage === 2 ? '/blog' : `/blog/${currentPage - 1}`}
+            class="px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-primary hover:bg-surface dark:hover:bg-surface-dark transition-colors"
+          >
+            &larr; 上一页
+          </a>
+        )}
+
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+          <a
+            href={page === 1 ? '/blog' : `/blog/${page}`}
+            class:list={[
+              'px-3 py-2 rounded-lg text-sm transition-colors',
+              page === currentPage
+                ? 'bg-primary text-white'
+                : 'text-text-secondary hover:text-primary hover:bg-surface dark:hover:bg-surface-dark'
+            ]}
+          >
+            {page}
+          </a>
+        ))}
+
+        {currentPage < totalPages && (
+          <a
+            href={`/blog/${currentPage + 1}`}
+            class="px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-primary hover:bg-surface dark:hover:bg-surface-dark transition-colors"
+          >
+            下一页 &rarr;
+          </a>
+        )}
+      </nav>
+    )}
+
+    {/* 筛选时隐藏分页 */}
+    <div id="pagination-wrapper">
+      {/* 分页导航会通过脚本控制显示/隐藏 */}
+    </div>
   </div>
 </BaseLayout>
 
@@ -117,6 +165,13 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))];
     const noPosts = document.getElementById('no-posts');
     if (noPosts) {
       noPosts.classList.toggle('hidden', visibleCount > 0);
+    }
+
+    // 筛选时隐藏分页导航
+    const pagination = document.querySelector('nav[aria-label="分页导航"]');
+    if (pagination) {
+      const isFiltering = activeCategory !== 'all' || activeTag !== 'all';
+      (pagination as HTMLElement).style.display = isFiltering ? 'none' : '';
     }
   }
 

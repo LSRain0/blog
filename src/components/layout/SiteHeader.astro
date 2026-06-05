@@ -80,14 +80,17 @@ function isActive(href: string): boolean {
   </nav>
 
   <!-- 移动端菜单 -->
-  <div id="mobile-menu" class="hidden md:hidden bg-background dark:bg-background-dark border-b border-border dark:border-border-dark">
-    <ul class="max-w-4xl mx-auto px-4 py-4 space-y-2">
+  <div
+    id="mobile-menu"
+    class="md:hidden overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0"
+  >
+    <ul class="max-w-4xl mx-auto px-4 py-4 space-y-2 bg-background dark:bg-background-dark border-t border-border dark:border-border-dark">
       {navItems.map(item => (
         <li>
           <a
             href={item.href}
             class:list={[
-              'block py-2 px-4 rounded-lg text-sm font-medium transition-colors',
+              'mobile-menu-link block py-2 px-4 rounded-lg text-sm font-medium transition-colors',
               isActive(item.href)
                 ? 'bg-primary/10 text-primary'
                 : 'hover:bg-surface dark:hover:bg-surface-dark'
@@ -102,37 +105,65 @@ function isActive(href: string): boolean {
 </header>
 
 <script>
-  // 主题切换
-  const themeToggle = document.getElementById('theme-toggle');
-  const html = document.documentElement;
+  function initHeader() {
+    // 主题切换
+    const themeToggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
 
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      html.classList.toggle('dark');
-      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark');
+        localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+      });
+    }
+
+    // 背景切换
+    const bgToggle = document.getElementById('bg-toggle');
+    const BG_COUNT = 17;
+
+    if (bgToggle) {
+      bgToggle.addEventListener('click', () => {
+        let current = parseInt(localStorage.getItem('bg-index') || '1', 10);
+        let next = current % BG_COUNT + 1;
+        localStorage.setItem('bg-index', String(next));
+        document.documentElement.style.setProperty('--bg-image', `url('/backgrounds/bg-${next}.jpg')`);
+      });
+    }
+
+    // 移动端菜单
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    function toggleMobileMenu() {
+      if (!mobileMenu) return;
+      const isOpen = mobileMenu.classList.contains('max-h-0');
+      if (isOpen) {
+        mobileMenu.classList.remove('max-h-0', 'opacity-0');
+        mobileMenu.classList.add('max-h-96', 'opacity-100');
+        mobileMenuToggle?.setAttribute('aria-label', '关闭菜单');
+      } else {
+        mobileMenu.classList.remove('max-h-96', 'opacity-100');
+        mobileMenu.classList.add('max-h-0', 'opacity-0');
+        mobileMenuToggle?.setAttribute('aria-label', '打开菜单');
+      }
+    }
+
+    if (mobileMenuToggle) {
+      mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+    }
+
+    // 点击菜单链接后自动关闭菜单
+    document.querySelectorAll('.mobile-menu-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (mobileMenu && !mobileMenu.classList.contains('max-h-0')) {
+          mobileMenu.classList.remove('max-h-96', 'opacity-100');
+          mobileMenu.classList.add('max-h-0', 'opacity-0');
+        }
+      });
     });
   }
 
-  // 背景切换
-  const bgToggle = document.getElementById('bg-toggle');
-  const BG_COUNT = 17;
-
-  if (bgToggle) {
-    bgToggle.addEventListener('click', () => {
-      let current = parseInt(localStorage.getItem('bg-index') || '1', 10);
-      let next = current % BG_COUNT + 1;
-      localStorage.setItem('bg-index', String(next));
-      document.documentElement.style.setProperty('--bg-image', `url('/backgrounds/bg-${next}.jpg')`);
-    });
-  }
-
-  // 移动端菜单
-  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
-
-  if (mobileMenuToggle && mobileMenu) {
-    mobileMenuToggle.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-    });
-  }
+  // Astro 页面切换时重新初始化
+  document.addEventListener('astro:page-load', initHeader);
+  initHeader();
 </script>
