@@ -7,20 +7,27 @@ interface Heading {
 
 interface Props {
   headings: Heading[];
+  class?: string;
 }
 
-const { headings } = Astro.props;
+const { headings, class: className } = Astro.props;
 ---
 
 {headings.length > 0 && (
-  <nav class="toc mb-8 p-4 rounded-lg bg-surface dark:bg-surface-dark">
-    <h2 class="text-sm font-semibold mb-3">目录</h2>
-    <ul class="space-y-1">
+  <nav class:list={['toc', className]}>
+    <h2 class="text-sm font-semibold mb-3 text-text dark:text-text-dark">
+      目录
+    </h2>
+    <ul class="space-y-1 border-l-2 border-border dark:border-border-dark">
       {headings.map(heading => (
-        <li style={`padding-left: ${(heading.depth - 1) * 1}rem`}>
+        <li>
           <a
             href={`#${heading.slug}`}
-            class="toc-link block text-sm text-text-secondary hover:text-primary transition-colors py-0.5"
+            class:list={[
+              'toc-link block text-sm transition-colors py-1 hover:text-primary',
+              'border-l-2 -ml-[2px] border-transparent hover:border-primary',
+            ]}
+            style={`padding-left: ${(heading.depth - 1) * 0.75 + 0.75}rem`}
             data-target={heading.slug}
           >
             {heading.text}
@@ -43,8 +50,27 @@ const { headings } = Astro.props;
 
     if (headings.length === 0) return;
 
+    // 平滑滚动
+    links.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.dataset.target;
+        const target = document.getElementById(targetId!);
+        if (target) {
+          const offset = 80; // 顶部偏移量，避免被固定头部遮挡
+          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({
+            top,
+            behavior: 'smooth'
+          });
+          // 更新 URL hash
+          history.pushState(null, '', `#${targetId}`);
+        }
+      });
+    });
+
     function updateActiveLink() {
-      const scrollY = window.scrollY + 100;
+      const scrollY = window.scrollY + 120;
 
       let activeId = headingIds[0];
       for (const heading of headings) {
@@ -54,13 +80,12 @@ const { headings } = Astro.props;
       }
 
       links.forEach(link => {
-        if (link.dataset.target === activeId) {
-          link.classList.add('text-primary', 'font-medium');
-          link.classList.remove('text-text-secondary');
-        } else {
-          link.classList.remove('text-primary', 'font-medium');
-          link.classList.add('text-text-secondary');
-        }
+        const isActive = link.dataset.target === activeId;
+        link.classList.toggle('text-primary', isActive);
+        link.classList.toggle('font-medium', isActive);
+        link.classList.toggle('text-text-secondary', !isActive);
+        link.classList.toggle('border-primary', isActive);
+        link.classList.toggle('border-transparent', !isActive);
       });
     }
 

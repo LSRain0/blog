@@ -27,64 +27,74 @@ const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
-  <article class="max-w-4xl mx-auto px-4 py-12">
-    <header class="mb-8">
-      <h1 class="text-3xl md:text-4xl font-bold mb-4">{post.data.title}</h1>
-      <div class="flex flex-wrap items-center gap-3 text-sm text-text-secondary">
-        <time datetime={post.data.pubDate.toISOString()}>
-          {formatDate(post.data.pubDate)}
-        </time>
-        {post.data.updatedDate && (
-          <span class="text-xs">
-            (更新于 {formatDate(post.data.updatedDate)})
-          </span>
-        )}
-        <span>· {readingTime} 分钟阅读</span>
-        {post.data.category && (
-          <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-            {post.data.category}
-          </span>
-        )}
-      </div>
-      {post.data.tags.length > 0 && (
-        <div class="flex flex-wrap gap-2 mt-4">
-          {post.data.tags.map(tag => (
-            <a
-              href={`/tags/${tag}`}
-              class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-            >
-              #{tag}
-            </a>
-          ))}
+  <div class="max-w-6xl mx-auto px-4 py-12">
+    <div class="flex gap-8">
+      {/* 侧边栏 - 目录 */}
+      <aside class="hidden lg:block w-64 flex-shrink-0">
+        <div class="sticky top-24">
+          <TableOfContents headings={headings} class="p-4 rounded-lg bg-surface dark:bg-surface-dark" />
         </div>
-      )}
-    </header>
+      </aside>
 
-    <TableOfContents headings={headings} />
+      {/* 主要内容 */}
+      <article class="flex-1 min-w-0 max-w-4xl">
+        <header class="mb-8">
+          <h1 class="text-3xl md:text-4xl font-bold mb-4">{post.data.title}</h1>
+          <div class="flex flex-wrap items-center gap-3 text-sm text-text-secondary">
+            <time datetime={post.data.pubDate.toISOString()}>
+              {formatDate(post.data.pubDate)}
+            </time>
+            {post.data.updatedDate && (
+              <span class="text-xs">
+                (更新于 {formatDate(post.data.updatedDate)})
+              </span>
+            )}
+            <span>· {readingTime} 分钟阅读</span>
+            {post.data.category && (
+              <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                {post.data.category}
+              </span>
+            )}
+          </div>
+          {post.data.tags.length > 0 && (
+            <div class="flex flex-wrap gap-2 mt-4">
+              {post.data.tags.map(tag => (
+                <a
+                  href={`/tags/${tag}`}
+                  class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                >
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          )}
+        </header>
 
-    <MarkdownProse data-pagefind-body>
-      <Content />
-    </MarkdownProse>
+        <MarkdownProse data-pagefind-body>
+          <Content />
+        </MarkdownProse>
 
-    <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
-      <nav class="flex justify-between">
-        {prevPost && (
-          <a
-            href={`/blog/${prevPost.id}`}
-            class="text-primary hover:text-primary-dark transition-colors"
-          >
-            ← {prevPost.data.title}
-          </a>
-        )}
-        {nextPost && (
-          <a
-            href={`/blog/${nextPost.id}`}
-            class="text-primary hover:text-primary-dark transition-colors ml-auto"
-          >
-            {nextPost.data.title} →
-          </a>
-        )}
-      </nav>
-    </footer>
-  </article>
+        <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
+          <nav class="flex justify-between">
+            {prevPost && (
+              <a
+                href={`/blog/${prevPost.id}`}
+                class="text-primary hover:text-primary-dark transition-colors"
+              >
+                ← {prevPost.data.title}
+              </a>
+            )}
+            {nextPost && (
+              <a
+                href={`/blog/${nextPost.id}`}
+                class="text-primary hover:text-primary-dark transition-colors ml-auto"
+              >
+                {nextPost.data.title} →
+              </a>
+            )}
+          </nav>
+        </footer>
+      </article>
+    </div>
+  </div>
 </BaseLayout>

@@ -30,11 +30,72 @@ const nextNote = currentIndex < seriesNotes.length - 1 ? seriesNotes[currentInde
 ---
 
 <BaseLayout title={note.data.title} description={note.data.description}>
-  <div class="max-w-4xl mx-auto px-4 py-12">
-    <div class="flex flex-col lg:flex-row gap-8">
-      {/* 侧边栏 - 系列导航 */}
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="flex gap-8">
+      {/* 左侧边栏 - 目录 */}
+      <aside class="hidden lg:block w-64 flex-shrink-0">
+        <div class="sticky top-24">
+          <TableOfContents headings={headings} class="p-4 rounded-lg bg-surface dark:bg-surface-dark" />
+        </div>
+      </aside>
+
+      {/* 主要内容 */}
+      <article class:list={['flex-1 min-w-0', seriesNotes.length === 0 && 'max-w-4xl mx-auto']}>
+        <header class="mb-8">
+          <h1 class="text-3xl md:text-4xl font-bold mb-4">{note.data.title}</h1>
+          <div class="flex flex-wrap items-center gap-3 text-sm text-text-secondary">
+            <time datetime={note.data.pubDate.toISOString()}>
+              {formatDate(note.data.pubDate)}
+            </time>
+            {note.data.updatedDate && (
+              <span class="text-xs">
+                (更新于 {formatDate(note.data.updatedDate)})
+              </span>
+            )}
+          </div>
+          {note.data.tags.length > 0 && (
+            <div class="flex flex-wrap gap-2 mt-4">
+              {note.data.tags.map(tag => (
+                <a
+                  href={`/tags/${tag}`}
+                  class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                >
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          )}
+        </header>
+
+        <MarkdownProse data-pagefind-body>
+          <Content />
+        </MarkdownProse>
+
+        <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
+          <nav class="flex justify-between">
+            {prevNote && (
+              <a
+                href={`/notes/${prevNote.id}`}
+                class="text-primary hover:text-primary-dark transition-colors"
+              >
+                ← {prevNote.data.title}
+              </a>
+            )}
+            {nextNote && (
+              <a
+                href={`/notes/${nextNote.id}`}
+                class="text-primary hover:text-primary-dark transition-colors ml-auto"
+              >
+                {nextNote.data.title} →
+              </a>
+            )}
+          </nav>
+        </footer>
+      </article>
+
+      {/* 右侧边栏 - 系列导航 */}
       {seriesNotes.length > 0 && (
-        <aside class="lg:w-64 flex-shrink-0">
+        <aside class="hidden xl:block w-64 flex-shrink-0">
           <nav class="sticky top-24 p-4 rounded-lg bg-surface dark:bg-surface-dark">
             <h2 class="text-sm font-semibold mb-3 text-text dark:text-text-dark">
               {note.data.seriesTitle || note.data.series}
@@ -62,62 +123,6 @@ const nextNote = currentIndex < seriesNotes.length - 1 ? seriesNotes[currentInde
           </nav>
         </aside>
       )}
-
-      {/* 主要内容 */}
-      <article class="flex-1 min-w-0">
-        <header class="mb-8">
-          <h1 class="text-3xl md:text-4xl font-bold mb-4">{note.data.title}</h1>
-          <div class="flex flex-wrap items-center gap-3 text-sm text-text-secondary">
-            <time datetime={note.data.pubDate.toISOString()}>
-              {formatDate(note.data.pubDate)}
-            </time>
-            {note.data.updatedDate && (
-              <span class="text-xs">
-                (更新于 {formatDate(note.data.updatedDate)})
-              </span>
-            )}
-          </div>
-          {note.data.tags.length > 0 && (
-            <div class="flex flex-wrap gap-2 mt-4">
-              {note.data.tags.map(tag => (
-                <a
-                  href={`/tags/${tag}`}
-                  class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                >
-                  #{tag}
-                </a>
-              ))}
-            </div>
-          )}
-        </header>
-
-        <TableOfContents headings={headings} />
-
-        <MarkdownProse data-pagefind-body>
-          <Content />
-        </MarkdownProse>
-
-        <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
-          <nav class="flex justify-between">
-            {prevNote && (
-              <a
-                href={`/notes/${prevNote.id}`}
-                class="text-primary hover:text-primary-dark transition-colors"
-              >
-                ← {prevNote.data.title}
-              </a>
-            )}
-            {nextNote && (
-              <a
-                href={`/notes/${nextNote.id}`}
-                class="text-primary hover:text-primary-dark transition-colors ml-auto"
-              >
-                {nextNote.data.title} →
-              </a>
-            )}
-          </nav>
-        </footer>
-      </article>
     </div>
   </div>
 </BaseLayout>
