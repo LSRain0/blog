@@ -7,64 +7,58 @@ interface Props {
 }
 
 const { path } = Astro.props;
-const TWIKOO_ENV_ID = import.meta.env.PUBLIC_TWIKOO_ENV_ID ?? '';
+const TWIKOO_ENV_ID = 'https://twikoo.lsrain-blog.com';
 ---
 
-{TWIKOO_ENV_ID ? (
-  <>
-    <div id="twikoo-comments" class="mt-12 pt-8 border-t border-border dark:border-border-dark">
-      <p id="twikoo-fallback" class="text-sm text-text-secondary text-center py-4">评论加载中...</p>
-    </div>
+<div id="twikoo-comments" class="mt-12 pt-8 border-t border-border dark:border-border-dark">
+  <p id="twikoo-fallback" class="text-sm text-text-secondary text-center py-4">评论加载中...</p>
+</div>
 
-    <script is:inline src="https://cdn.jsdelivr.net/npm/twikoo@1.6.42/dist/twikoo.min.js" onerror="document.getElementById('twikoo-fallback').textContent='评论系统加载失败，请刷新重试'"></script>
+<script is:inline src="https://cdn.jsdelivr.net/npm/twikoo@1.6.42/dist/twikoo.min.js" onerror="document.getElementById('twikoo-fallback').textContent='评论系统加载失败，请刷新重试'"></script>
 
-    <script is:inline define:vars={{ path, TWIKOO_ENV_ID }}>
-      function initTwikoo() {
-        const container = document.getElementById('twikoo-comments');
-        const fallback = document.getElementById('twikoo-fallback');
-        if (!container) return;
-        if (typeof twikoo === 'undefined') {
-          if (fallback) fallback.textContent = '评论系统未加载，可能是网络问题';
-          return;
-        }
-        if (fallback) fallback.remove();
+<script is:inline define:vars={{ path, TWIKOO_ENV_ID }}>
+  function initTwikoo() {
+    const container = document.getElementById('twikoo-comments');
+    const fallback = document.getElementById('twikoo-fallback');
+    if (!container) return;
+    if (typeof twikoo === 'undefined') {
+      if (fallback) fallback.textContent = '评论系统未加载，可能是网络问题';
+      return;
+    }
+    if (fallback) fallback.remove();
 
-        // 检测深色模式
-        const isDark = document.documentElement.classList.contains('dark');
+    // 检测深色模式
+    const isDark = document.documentElement.classList.contains('dark');
 
-        // 初始化 Twikoo
-        twikoo.init({
-          envId: TWIKOO_ENV_ID,
-          el: '#twikoo-comments',
-          path: path,
-          dark: isDark,
-          region: '',
-          lang: 'zh-CN',
-        });
+    // 初始化 Twikoo
+    twikoo.init({
+      envId: TWIKOO_ENV_ID,
+      el: '#twikoo-comments',
+      path: path,
+      dark: isDark,
+      region: '',
+      lang: 'zh-CN',
+    });
 
-        // 监听主题变化
-        const observer = new MutationObserver(() => {
-          const isDark = document.documentElement.classList.contains('dark');
-          twikoo.update({ dark: isDark });
-        });
+    // 监听主题变化
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains('dark');
+      twikoo.update({ dark: isDark });
+    });
 
-        observer.observe(document.documentElement, {
-          attributes: true,
-          attributeFilter: ['class'],
-        });
-      }
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+  }
 
-      // 页面加载时初始化
-      document.addEventListener('astro:page-load', initTwikoo);
+  // 页面加载时初始化
+  document.addEventListener('astro:page-load', initTwikoo);
 
-      // 首次加载
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initTwikoo);
-      } else {
-        initTwikoo();
-      }
-    </script>
-  </>
-) : (
-  <p class="text-sm text-text-secondary text-center py-4 mt-12 pt-8 border-t border-border dark:border-border-dark">评论已禁用</p>
-)}
+  // 首次加载
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTwikoo);
+  } else {
+    initTwikoo();
+  }
+</script>
