@@ -18,7 +18,8 @@
     "astro": "^6.4.3",
     "katex": "^0.17.0",
     "rehype-katex": "^7.0.1",
-    "remark-math": "^6.0.0"
+    "remark-math": "^6.0.0",
+    "twikoo": "^1.7.11"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.0",

@@ -1,0 +1,58 @@
+---
+// Twikoo 评论组件
+// 支持深色模式、视图过渡、匿名评论
+
+interface Props {
+  path: string;
+}
+
+const { path } = Astro.props;
+---
+
+<div id="twikoo-comments" class="mt-12 pt-8 border-t border-border dark:border-border-dark"></div>
+
+<script is:inline src="https://unpkg.com/twikoo@1.6.40/dist/twikoo.all.min.js"></script>
+
+<script is:inline define:vars={{ path }}>
+  // Twikoo 服务端地址
+  const TWIKOO_ENV_ID = 'https://twikoo-cloudflare.lsrain0824.workers.dev';
+
+  function initTwikoo() {
+    const container = document.getElementById('twikoo-comments');
+    if (!container || typeof twikoo === 'undefined') return;
+
+    // 检测深色模式
+    const isDark = document.documentElement.classList.contains('dark');
+
+    // 初始化 Twikoo
+    twikoo.init({
+      envId: TWIKOO_ENV_ID,
+      el: '#twikoo-comments',
+      path: path,
+      dark: isDark,
+      region: '',
+      lang: 'zh-CN',
+    });
+
+    // 监听主题变化
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains('dark');
+      twikoo.update({ dark: isDark });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+  }
+
+  // 页面加载时初始化
+  document.addEventListener('astro:page-load', initTwikoo);
+
+  // 首次加载
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTwikoo);
+  } else {
+    initTwikoo();
+  }
+</script>

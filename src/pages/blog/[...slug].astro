@@ -2,6 +2,7 @@
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import MarkdownProse from '../../components/post/MarkdownProse.astro';
 import TableOfContents from '../../components/post/TableOfContents.astro';
+import TwikooComment from '../../components/post/TwikooComment.astro';
 import { getCollection, render } from 'astro:content';
 import { formatDate } from '../../utils/date';
 import { calculateReadingTime } from '../../utils/reading-time';
@@ -73,6 +74,9 @@ const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
         <MarkdownProse data-pagefind-body>
           <Content />
         </MarkdownProse>
+
+        {/* 评论区 */}
+        <TwikooComment path={`/blog/${post.id}`} />
 
         <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
           <nav class="flex justify-between">
