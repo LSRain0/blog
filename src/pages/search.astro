@@ -46,6 +46,13 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
       debounceTimer = setTimeout(() => search(e.target.value), 300);
     });
 
+    function getTypeLabel(url) {
+      if (url.includes('/blog/')) return { label: '文章', color: 'bg-primary/10 text-primary' };
+      if (url.includes('/notes/')) return { label: '笔记', color: 'bg-accent/10 text-accent' };
+      if (url.includes('/projects/')) return { label: '项目', color: 'bg-secondary/10 text-secondary' };
+      return { label: '页面', color: 'bg-surface dark:bg-surface-dark text-text-secondary' };
+    }
+
     async function search(query) {
       if (!query.trim()) {
         resultsContainer.innerHTML = '<p class="text-text-secondary text-center py-8">输入关键词开始搜索</p>';
@@ -66,10 +73,22 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
 
       for (const result of results.results.slice(0, 10)) {
         const data = await result.data();
+        const type = getTypeLabel(data.url);
+        const tags = data.meta?.tags || '';
+        const tagList = tags ? tags.split(',').filter(Boolean).slice(0, 3) : [];
+
         html.push(`
           <a href="${data.url}" class="block p-6 rounded-xl border border-border dark:border-border-dark bg-background dark:bg-background-dark hover:shadow-lg transition-all duration-300">
-            <h3 class="text-lg font-semibold text-text dark:text-text-dark mb-2">${data.meta?.title || '无标题'}</h3>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xs px-2 py-0.5 rounded-full ${type.color}">${type.label}</span>
+              ${data.meta?.title ? `<h3 class="text-lg font-semibold text-text dark:text-text-dark">${data.meta.title}</h3>` : '<h3 class="text-lg font-semibold text-text dark:text-text-dark">无标题</h3>'}
+            </div>
             <p class="text-sm text-text-secondary line-clamp-3">${data.excerpt}</p>
+            ${tagList.length > 0 ? `
+              <div class="flex flex-wrap gap-1.5 mt-3">
+                ${tagList.map(tag => `<span class="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">#${tag.trim()}</span>`).join('')}
+              </div>
+            ` : ''}
           </a>
         `);
       }

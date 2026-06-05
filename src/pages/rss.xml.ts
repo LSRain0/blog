@@ -1,25 +1,32 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import type { APIContext } from 'astro';
 
 export async function GET(context: APIContext) {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
   const notes = await getCollection('notes', ({ data }) => !data.draft);
 
-  const items = [
-    ...posts.map(post => ({
-      title: post.data.title,
-      pubDate: post.data.pubDate,
-      description: post.data.description,
-      link: `/blog/${post.id}/`,
-    })),
-    ...notes.map(note => ({
-      title: note.data.title,
-      pubDate: note.data.pubDate,
-      description: note.data.description,
-      link: `/notes/${note.id}/`,
-    })),
-  ].sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+  const allEntries = [
+    ...posts.map(post => ({ ...post, link: `/blog/${post.id}/`, type: 'post' as const })),
+    ...notes.map(note => ({ ...note, link: `/notes/${note.id}/`, type: 'note' as const })),
+  ].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  const items = [];
+  for (const entry of allEntries) {
+    const { html } = await render(entry);
+    items.push({
+      title: entry.data.title,
+      pubDate: entry.data.pubDate,
+      description: entry.data.description,
+      link: entry.link,
+      categories: [
+        ...(entry.data.tags || []),
+        ...(entry.data.category ? [entry.data.category] : []),
+        entry.type === 'note' ? '笔记' : '文章',
+      ],
+      content: html,
+    });
+  }
 
   return rss({
     title: 'LSRain的小屋',

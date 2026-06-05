@@ -1,0 +1,95 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+---
+
+{headings.length > 0 && (
+  <div class="lg:hidden mb-6">
+    <button
+      id="mobile-toc-toggle"
+      class="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-surface dark:bg-surface-dark border border-border dark:border-border-dark text-sm font-medium text-text dark:text-text-dark"
+      aria-expanded="false"
+      aria-controls="mobile-toc-content"
+    >
+      <span>目录</span>
+      <svg class="w-4 h-4 transition-transform" id="mobile-toc-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+    <nav
+      id="mobile-toc-content"
+      class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0"
+    >
+      <ul class="mt-2 p-4 rounded-lg bg-surface dark:bg-surface-dark border border-border dark:border-border-dark space-y-1">
+        {headings.map(heading => (
+          <li>
+            <a
+              href={`#${heading.slug}`}
+              class="mobile-toc-link block text-sm text-text-secondary hover:text-primary transition-colors py-1"
+              style={`padding-left: ${(heading.depth - 1) * 0.75 + 0.5}rem`}
+              data-target={heading.slug}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+)}
+
+<script>
+  function initMobileTOC() {
+    const toggle = document.getElementById('mobile-toc-toggle');
+    const content = document.getElementById('mobile-toc-content');
+    const arrow = document.getElementById('mobile-toc-arrow');
+    if (!toggle || !content) return;
+
+    toggle.addEventListener('click', () => {
+      const isOpen = !content.classList.contains('max-h-0');
+      if (isOpen) {
+        content.classList.remove('max-h-96', 'opacity-100');
+        content.classList.add('max-h-0', 'opacity-0');
+        arrow?.classList.remove('rotate-180');
+        toggle.setAttribute('aria-expanded', 'false');
+      } else {
+        content.classList.remove('max-h-0', 'opacity-0');
+        content.classList.add('max-h-96', 'opacity-100');
+        arrow?.classList.add('rotate-180');
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    // 点击链接后收起
+    document.querySelectorAll('.mobile-toc-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = (link as HTMLElement).dataset.target;
+        const target = document.getElementById(targetId!);
+        if (target) {
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+          history.pushState(null, '', `#${targetId}`);
+        }
+        // 收起目录
+        content.classList.remove('max-h-96', 'opacity-100');
+        content.classList.add('max-h-0', 'opacity-0');
+        arrow?.classList.remove('rotate-180');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initMobileTOC);
+  initMobileTOC();
+</script>

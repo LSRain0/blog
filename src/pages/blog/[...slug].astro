@@ -2,10 +2,15 @@
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import MarkdownProse from '../../components/post/MarkdownProse.astro';
 import TableOfContents from '../../components/post/TableOfContents.astro';
+import MobileTOC from '../../components/post/MobileTOC.astro';
+import ReadingProgress from '../../components/post/ReadingProgress.astro';
+import BackToTop from '../../components/post/BackToTop.astro';
 import TwikooComment from '../../components/post/TwikooComment.astro';
 import { getCollection, render } from 'astro:content';
 import { formatDate } from '../../utils/date';
 import { calculateReadingTime } from '../../utils/reading-time';
+import { articleSchema, breadcrumbListSchema } from '../../utils/json-ld';
+import { SITE_URL } from '../../consts';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
@@ -25,10 +30,33 @@ const allPosts = (await getCollection('posts', ({ data }) => !data.draft))
 const currentIndex = allPosts.findIndex(p => p.id === post.id);
 const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+
+const postUrl = `${SITE_URL}/blog/${post.id}/`;
+const jsonLd = [
+  articleSchema({
+    title: post.data.title,
+    description: post.data.description,
+    url: postUrl,
+    datePublished: post.data.pubDate.toISOString(),
+    dateModified: post.data.updatedDate?.toISOString(),
+    image: post.data.cover ? `${SITE_URL}${post.data.cover}` : undefined,
+    tags: post.data.tags,
+  }),
+  breadcrumbListSchema([
+    { name: '首页', url: SITE_URL },
+    { name: '博客', url: `${SITE_URL}/blog/` },
+    { name: post.data.title, url: postUrl },
+  ]),
+];
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} image={post.data.cover}>
+<BaseLayout title={post.data.title} description={post.data.description} image={post.data.cover} type="article" jsonLd={jsonLd}>
+  <ReadingProgress />
+  <BackToTop />
   <div class="max-w-6xl mx-auto px-4 py-12">
+    {/* 移动端目录 */}
+    <MobileTOC headings={headings} />
+
     <div class="flex gap-8">
       {/* 侧边栏 - 目录 */}
       <aside class="hidden lg:block w-64 flex-shrink-0">

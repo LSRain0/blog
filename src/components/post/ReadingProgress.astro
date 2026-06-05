@@ -1,0 +1,30 @@
+---
+// 阅读进度条组件
+---
+
+<div
+  id="reading-progress"
+  class="fixed left-0 h-[3px] z-[60] transition-[width] duration-100 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]"
+  style="top: 2.5rem; width: 0%"
+  aria-hidden="true"
+></div>
+
+<script>
+  function initReadingProgress() {
+    const bar = document.getElementById('reading-progress');
+    if (!bar) return;
+
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width = `${Math.min(progress, 100)}%`;
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+  }
+
+  document.addEventListener('astro:page-load', initReadingProgress);
+  initReadingProgress();
+</script>

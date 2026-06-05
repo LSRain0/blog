@@ -13,17 +13,30 @@ const allTags = new Map<string, number>();
 });
 
 const sortedTags = Array.from(allTags.entries()).sort((a, b) => b[1] - a[1]);
+const maxCount = sortedTags.length > 0 ? sortedTags[0][1] : 1;
+
+function getTagSize(count: number): string {
+  const ratio = count / maxCount;
+  if (ratio >= 0.8) return 'text-xl font-bold';
+  if (ratio >= 0.5) return 'text-lg font-semibold';
+  if (ratio >= 0.3) return 'text-base font-medium';
+  return 'text-sm';
+}
 ---
 
 <BaseLayout title="标签" description="所有标签">
   <div class="max-w-4xl mx-auto px-4 py-12" data-pagefind-body>
-    <h1 class="text-3xl font-bold mb-8">标签</h1>
+    <h1 class="text-3xl font-bold mb-2 text-text dark:text-text-dark">标签</h1>
+    <p class="text-text-secondary mb-8">共 {sortedTags.length} 个标签</p>
 
-    <div class="flex flex-wrap gap-3">
+    <div class="flex flex-wrap gap-3 items-baseline">
       {sortedTags.map(([tag, count]) => (
         <a
           href={`/tags/${encodeURIComponent(tag)}/`}
-          class="px-4 py-2 rounded-full bg-surface dark:bg-surface-dark hover:bg-primary/10 hover:text-primary transition-colors"
+          class:list={[
+            'px-4 py-2 rounded-full bg-surface dark:bg-surface-dark hover:bg-primary/10 hover:text-primary transition-colors text-text dark:text-text-dark',
+            getTagSize(count),
+          ]}
         >
           #{tag}
           <span class="text-text-secondary text-sm ml-1">({count})</span>

@@ -2,16 +2,21 @@
 import SiteHeader from './SiteHeader.astro';
 import SiteFooter from './SiteFooter.astro';
 import '../../styles/global.css';
-import { SITE_DESCRIPTION } from '../../consts';
+import { SITE_DESCRIPTION, SITE_URL } from '../../consts';
+import { websiteSchema } from '../../utils/json-ld';
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
+  type?: 'website' | 'article';
+  jsonLd?: Record<string, any>;
 }
 
-const { title, description = SITE_DESCRIPTION, image } = Astro.props;
+const { title, description = SITE_DESCRIPTION, image, type = 'website', jsonLd } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImage = image ? new URL(image, Astro.site).href : new URL('/og-default.svg', Astro.site).href;
+const siteJsonLd = jsonLd || websiteSchema(SITE_URL);
 ---
 
 <!doctype html>
@@ -26,22 +31,26 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:site_name" content="LSRain的小屋" />
     <meta property="og:locale" content="zh_CN" />
-    {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
+    <meta property="og:image" content={ogImage} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    {image && <meta name="twitter:image" content={new URL(image, Astro.site)} />}
+    <meta name="twitter:image" content={ogImage} />
 
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title="LSRain的小屋" href="/rss.xml" />
 
     <title>{title} | LSRain的小屋</title>
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(siteJsonLd)} />
 
     <script is:inline>
       // 初始化主题:无存储值时跟随系统偏好
@@ -50,7 +59,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         document.documentElement.classList.add('dark');
       }
 
-      // 初始化背景图片
+      // 初始化背景图片（异步加载，不阻塞首屏）
       (function() {
         var BG_COUNT = 17;
         var saved = localStorage.getItem('bg-index');
@@ -61,7 +70,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           idx = Math.floor(Math.random() * BG_COUNT) + 1;
           localStorage.setItem('bg-index', idx);
         }
-        document.documentElement.style.setProperty('--bg-image', "url('/backgrounds/bg-" + idx + ".jpg')");
+        var url = '/backgrounds/bg-' + idx + '.jpg';
+        document.documentElement.style.setProperty('--bg-image', 'url("' + url + '")');
+        // 异步预加载图片，加载完成后显示
+        var img = new Image();
+        img.onload = function() {
+          document.body.classList.add('bg-loaded');
+        };
+        img.src = url;
       })();
     </script>
   </head>
@@ -71,5 +87,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </main>
     <SiteFooter />
+
+    <script is:inline>
+      // 全局快捷键: "/" 跳转搜索
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+          e.preventDefault();
+          window.location.href = '/search/';
+        }
+      });
+    </script>
   </body>
 </html>

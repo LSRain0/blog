@@ -2,9 +2,15 @@
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import MarkdownProse from '../../components/post/MarkdownProse.astro';
 import TableOfContents from '../../components/post/TableOfContents.astro';
+import MobileTOC from '../../components/post/MobileTOC.astro';
+import ReadingProgress from '../../components/post/ReadingProgress.astro';
+import BackToTop from '../../components/post/BackToTop.astro';
 import TwikooComment from '../../components/post/TwikooComment.astro';
 import { getCollection, render } from 'astro:content';
 import { formatDate } from '../../utils/date';
+import { calculateReadingTime } from '../../utils/reading-time';
+import { articleSchema, breadcrumbListSchema } from '../../utils/json-ld';
+import { SITE_URL } from '../../consts';
 
 export async function getStaticPaths() {
   const notes = await getCollection('notes', ({ data }) => !data.draft);
@@ -16,6 +22,7 @@ export async function getStaticPaths() {
 
 const { note } = Astro.props;
 const { Content, headings } = await render(note);
+const readingTime = calculateReadingTime(note.body || '');
 
 // 获取同系列笔记
 const allNotes = await getCollection('notes', ({ data }) => !data.draft);
@@ -28,10 +35,50 @@ const seriesNotes = note.data.series
 const currentIndex = seriesNotes.findIndex(n => n.id === note.id);
 const prevNote = currentIndex > 0 ? seriesNotes[currentIndex - 1] : null;
 const nextNote = currentIndex < seriesNotes.length - 1 ? seriesNotes[currentIndex + 1] : null;
+
+const noteUrl = `${SITE_URL}/notes/${note.id}/`;
+const jsonLd = [
+  articleSchema({
+    title: note.data.title,
+    description: note.data.description,
+    url: noteUrl,
+    datePublished: note.data.pubDate.toISOString(),
+    dateModified: note.data.updatedDate?.toISOString(),
+    image: note.data.cover ? `${SITE_URL}${note.data.cover}` : undefined,
+    tags: note.data.tags,
+  }),
+  breadcrumbListSchema([
+    { name: '首页', url: SITE_URL },
+    { name: '笔记', url: `${SITE_URL}/notes/` },
+    ...(note.data.seriesTitle ? [{ name: note.data.seriesTitle, url: `${SITE_URL}/notes/` }] : []),
+    { name: note.data.title, url: noteUrl },
+  ]),
+];
 ---
 
-<BaseLayout title={note.data.title} description={note.data.description} image={note.data.cover}>
+<BaseLayout title={note.data.title} description={note.data.description} image={note.data.cover} type="article" jsonLd={jsonLd}>
+  <ReadingProgress />
+  <BackToTop />
   <div class="max-w-7xl mx-auto px-4 py-12">
+    {/* 系列面包屑 */}
+    {seriesNotes.length > 0 && (
+      <nav class="mb-6 text-sm text-text-secondary" aria-label="系列导航">
+        <a href="/notes/" class="hover:text-primary transition-colors">笔记</a>
+        <span class="mx-2">/</span>
+        <a
+          href={`/notes/`}
+          class="hover:text-primary transition-colors"
+        >
+          {note.data.seriesTitle || note.data.series}
+        </a>
+        <span class="mx-2">/</span>
+        <span class="text-text dark:text-text-dark">第 {currentIndex + 1} 章</span>
+      </nav>
+    )}
+
+    {/* 移动端目录 */}
+    <MobileTOC headings={headings} />
+
     <div class="flex gap-8">
       {/* 左侧边栏 - 目录 */}
       <aside class="hidden lg:block w-64 flex-shrink-0">
@@ -53,6 +100,7 @@ const nextNote = currentIndex < seriesNotes.length - 1 ? seriesNotes[currentInde
                 (更新于 {formatDate(note.data.updatedDate)})
               </span>
             )}
+            <span>· {readingTime} 分钟阅读</span>
           </div>
           {note.data.tags.length > 0 && (
             <div class="flex flex-wrap gap-2 mt-4">

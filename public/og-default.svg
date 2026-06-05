@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#111827"/>
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="#1f2937" stroke="#374151" stroke-width="2"/>
+  <text x="600" y="280" font-family="system-ui, sans-serif" font-size="64" font-weight="bold" fill="#f9fafb" text-anchor="middle">LSRain的小屋</text>
+  <text x="600" y="360" font-family="system-ui, sans-serif" font-size="28" fill="#9ca3af" text-anchor="middle">物理笔记 · 数学推导 · 编程记录 · 生活随想</text>
+  <circle cx="600" cy="480" r="6" fill="#2563eb"/>
+</svg>

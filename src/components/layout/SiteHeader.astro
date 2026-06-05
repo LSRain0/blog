@@ -126,7 +126,13 @@ function isActive(href: string): boolean {
         let current = parseInt(localStorage.getItem('bg-index') || '1', 10);
         let next = current % BG_COUNT + 1;
         localStorage.setItem('bg-index', String(next));
-        document.documentElement.style.setProperty('--bg-image', `url('/backgrounds/bg-${next}.jpg')`);
+        var url = `/backgrounds/bg-${next}.jpg`;
+        var img = new Image();
+        img.onload = function() {
+          document.documentElement.style.setProperty('--bg-image', `url('${url}')`);
+          document.body.classList.add('bg-loaded');
+        };
+        img.src = url;
       });
     }
 
