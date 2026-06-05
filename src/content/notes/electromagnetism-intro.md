@@ -7,7 +7,6 @@ category: "physics"
 series: "electromagnetism"
 seriesTitle: "电磁学"
 order: 1
-math: true
 ---
 
 ## 电磁学的研究对象

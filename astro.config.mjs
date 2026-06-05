@@ -8,6 +8,10 @@ import rehypeKatex from 'rehype-katex';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://lsrain.vercel.app',
+  trailingSlash: 'always',
+  build: {
+    format: 'directory',
+  },
   integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],

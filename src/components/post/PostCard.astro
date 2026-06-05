@@ -38,7 +38,7 @@ const readingTime = body ? calculateReadingTime(body) : null;
       )}
     </div>
 
-    <a href={`/blog/${slug}`} class="block">
+    <a href={`/blog/${slug}/`} class="block">
       <h3 class="text-xl font-semibold text-text dark:text-text-dark group-hover:text-primary transition-colors">
         {title}
       </h3>
@@ -52,7 +52,7 @@ const readingTime = body ? calculateReadingTime(body) : null;
       <div class="flex flex-wrap gap-2">
         {tags.map(tag => (
           <a
-            href={`/tags/${tag}`}
+            href={`/tags/${encodeURIComponent(tag)}/`}
             class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
           >
             #{tag}

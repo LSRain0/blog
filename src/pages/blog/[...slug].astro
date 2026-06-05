@@ -27,7 +27,7 @@ const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1]
 const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description}>
+<BaseLayout title={post.data.title} description={post.data.description} image={post.data.cover}>
   <div class="max-w-6xl mx-auto px-4 py-12">
     <div class="flex gap-8">
       {/* 侧边栏 - 目录 */}
@@ -61,7 +61,7 @@ const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
             <div class="flex flex-wrap gap-2 mt-4">
               {post.data.tags.map(tag => (
                 <a
-                  href={`/tags/${tag}`}
+                  href={`/tags/${encodeURIComponent(tag)}/`}
                   class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                 >
                   #{tag}
@@ -82,7 +82,7 @@ const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
           <nav class="flex justify-between">
             {prevPost && (
               <a
-                href={`/blog/${prevPost.id}`}
+                href={`/blog/${prevPost.id}/`}
                 class="text-primary hover:text-primary-dark transition-colors"
               >
                 ← {prevPost.data.title}
@@ -90,7 +90,7 @@ const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
             )}
             {nextPost && (
               <a
-                href={`/blog/${nextPost.id}`}
+                href={`/blog/${nextPost.id}/`}
                 class="text-primary hover:text-primary-dark transition-colors ml-auto"
               >
                 {nextPost.data.title} →

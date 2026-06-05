@@ -2,6 +2,7 @@
 import SiteHeader from './SiteHeader.astro';
 import SiteFooter from './SiteFooter.astro';
 import '../../styles/global.css';
+import { SITE_DESCRIPTION } from '../../consts';
 
 interface Props {
   title: string;
@@ -9,7 +10,7 @@ interface Props {
   image?: string;
 }
 
-const { title, description = 'LSRain的个人博客 - 物理笔记、数学推导、编程记录、生活随笔', image } = Astro.props;
+const { title, description = SITE_DESCRIPTION, image } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 

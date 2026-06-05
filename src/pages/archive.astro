@@ -48,7 +48,7 @@ const years = Array.from(itemsByYear.keys()).sort((a, b) => b - a);
 ---
 
 <BaseLayout title="归档" description="文章和笔记归档">
-  <div class="max-w-4xl mx-auto px-4 py-12">
+  <div class="max-w-4xl mx-auto px-4 py-12" data-pagefind-body>
     <h1 class="text-3xl font-bold mb-2 text-text dark:text-text-dark">归档</h1>
     <p class="text-text-secondary mb-8">共 {posts.length} 篇文章，{notes.length} 篇笔记</p>
 
@@ -70,7 +70,7 @@ const years = Array.from(itemsByYear.keys()).sort((a, b) => b - a);
           <div class="space-y-3">
             {itemsByYear.get(year)?.map(item => (
               <a
-                href={item.type === 'post' ? `/blog/${item.id}` : `/notes/${item.id}`}
+                href={item.type === 'post' ? `/blog/${item.id}/` : `/notes/${item.id}/`}
                 class="flex items-baseline gap-4 group py-2"
               >
                 <time

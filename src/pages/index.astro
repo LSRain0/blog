@@ -2,7 +2,6 @@
 import BaseLayout from '../components/layout/BaseLayout.astro';
 import PostCard from '../components/post/PostCard.astro';
 import { getCollection } from 'astro:content';
-import { formatDate } from '../utils/date';
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
@@ -26,7 +25,7 @@ const totalTags = allTags.length;
 ---
 
 <BaseLayout title="首页">
-  <div class="max-w-4xl mx-auto px-4 py-12">
+  <div class="max-w-4xl mx-auto px-4 py-12" data-pagefind-body>
     <!-- Hero 区域 -->
     <section class="mb-16">
       <div class="p-8 md:p-12 rounded-2xl bg-surface dark:bg-surface-dark border border-border dark:border-border-dark">
@@ -57,7 +56,7 @@ const totalTags = allTags.length;
 
             <!-- 搜索入口 -->
             <a
-              href="/search"
+              href="/search/"
               class="inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-background dark:bg-background-dark border border-border dark:border-border-dark text-text-secondary hover:border-primary hover:text-primary transition-all group"
             >
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -73,7 +72,7 @@ const totalTags = allTags.length;
           <!-- 快速链接 -->
           <div class="flex flex-col gap-3 md:min-w-[180px]">
             <a
-              href="/blog"
+              href="/blog/"
               class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
             >
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -82,7 +81,7 @@ const totalTags = allTags.length;
               浏览文章
             </a>
             <a
-              href="/notes"
+              href="/notes/"
               class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors text-sm font-medium"
             >
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -91,7 +90,7 @@ const totalTags = allTags.length;
               学习笔记
             </a>
             <a
-              href="/projects"
+              href="/projects/"
               class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-secondary/10 text-secondary hover:bg-secondary/20 transition-colors text-sm font-medium"
             >
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -100,7 +99,7 @@ const totalTags = allTags.length;
               项目展示
             </a>
             <a
-              href="/about"
+              href="/about/"
               class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface dark:bg-surface-dark text-text-secondary hover:text-primary transition-colors text-sm font-medium"
             >
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -117,7 +116,7 @@ const totalTags = allTags.length;
     <section class="mb-16">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-semibold text-text dark:text-text-dark">最新文章</h2>
-        <a href="/blog" class="text-sm text-primary hover:text-primary-dark transition-colors">
+        <a href="/blog/" class="text-sm text-primary hover:text-primary-dark transition-colors">
           查看全部 &rarr;
         </a>
       </div>
@@ -141,14 +140,14 @@ const totalTags = allTags.length;
     <section class="mb-16">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-semibold text-text dark:text-text-dark">最新笔记</h2>
-        <a href="/notes" class="text-sm text-primary hover:text-primary-dark transition-colors">
+        <a href="/notes/" class="text-sm text-primary hover:text-primary-dark transition-colors">
           查看全部 &rarr;
         </a>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {notes.map(note => (
           <a
-            href={`/notes/${note.id}`}
+            href={`/notes/${note.id}/`}
             class="group p-5 rounded-xl border border-border dark:border-border-dark bg-background dark:bg-background-dark hover:shadow-lg transition-all duration-300"
           >
             <h3 class="font-semibold mb-2 text-text dark:text-text-dark group-hover:text-primary transition-colors">
@@ -177,14 +176,14 @@ const totalTags = allTags.length;
       <section class="mb-16">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-2xl font-semibold text-text dark:text-text-dark">项目展示</h2>
-          <a href="/projects" class="text-sm text-primary hover:text-primary-dark transition-colors">
+          <a href="/projects/" class="text-sm text-primary hover:text-primary-dark transition-colors">
             查看全部 &rarr;
           </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {projects.map(project => (
             <a
-              href={`/projects/${project.id}`}
+              href={`/projects/${project.id}/`}
               class="group p-5 rounded-xl border border-border dark:border-border-dark bg-background dark:bg-background-dark hover:shadow-lg transition-all duration-300"
             >
               <h3 class="font-semibold mb-2 text-text dark:text-text-dark group-hover:text-primary transition-colors">
@@ -211,7 +210,7 @@ const totalTags = allTags.length;
         <div class="flex flex-wrap gap-2">
           {allTags.slice(0, 15).map(tag => (
             <a
-              href={`/tags/${tag}`}
+              href={`/tags/${encodeURIComponent(tag)}/`}
               class="px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm"
             >
               #{tag}
@@ -228,7 +227,7 @@ const totalTags = allTags.length;
   document.addEventListener('keydown', (e) => {
     if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
       e.preventDefault();
-      window.location.href = '/search';
+      window.location.href = '/search/';
     }
   });
 </script>

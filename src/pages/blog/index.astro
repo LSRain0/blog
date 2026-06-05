@@ -5,88 +5,25 @@ import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-const categories = [...new Set(posts.map(p => p.data.category).filter(Boolean))];
-const allTags = [...new Set(posts.flatMap(p => p.data.tags))];
-
-// 分页配置
-const POSTS_PER_PAGE = 10;
-const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
-const currentPage = 1;
-const paginatedPosts = posts.slice(0, POSTS_PER_PAGE);
 ---
 
 <BaseLayout title="博客" description="所有博客文章">
-  <div class="max-w-4xl mx-auto px-4 py-12">
+  <div class="max-w-4xl mx-auto px-4 py-12" data-pagefind-body>
     <h1 class="text-3xl font-bold mb-8 text-text dark:text-text-dark">博客文章</h1>
 
-    {categories.length > 0 && (
-      <div class="mb-6">
-        <h2 class="text-sm font-semibold mb-3 text-text-secondary">分类</h2>
-        <div class="flex flex-wrap gap-2">
-          <button
-            class="category-btn px-3 py-1.5 rounded-full text-sm transition-colors bg-primary text-white"
-            data-category="all"
-          >
-            全部
-          </button>
-          {categories.map(category => (
-            <button
-              class="category-btn px-3 py-1.5 rounded-full text-sm transition-colors bg-surface dark:bg-surface-dark text-text-secondary hover:bg-primary/10 hover:text-primary"
-              data-category={category}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-      </div>
-    )}
-
-    {allTags.length > 0 && (
-      <div class="mb-8">
-        <h2 class="text-sm font-semibold mb-3 text-text-secondary">标签</h2>
-        <div class="flex flex-wrap gap-2">
-          <button
-            class="tag-btn px-2 py-1 rounded-full text-xs transition-colors bg-primary text-white"
-            data-tag="all"
-          >
-            全部
-          </button>
-          {allTags.map(tag => (
-            <button
-              class="tag-btn px-2 py-1 rounded-full text-xs transition-colors bg-surface dark:bg-surface-dark text-text-secondary hover:bg-primary/10 hover:text-primary"
-              data-tag={tag}
-            >
-              #{tag}
-            </button>
-          ))}
-        </div>
-      </div>
-    )}
-
-    <div id="posts-container" class="space-y-4">
-      {paginatedPosts.map(post => (
-        <div
-          class="post-item"
-          data-category={post.data.category || ''}
-          data-tags={post.data.tags.join(',')}
-        >
-          <PostCard
-            title={post.data.title}
-            description={post.data.description}
-            pubDate={post.data.pubDate}
-            updatedDate={post.data.updatedDate}
-            tags={post.data.tags}
-            slug={post.id}
-            body={post.body}
-            category={post.data.category}
-          />
-        </div>
+    <div class="space-y-4">
+      {posts.map(post => (
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          pubDate={post.data.pubDate}
+          updatedDate={post.data.updatedDate}
+          tags={post.data.tags}
+          slug={post.id}
+          body={post.body}
+          category={post.data.category}
+        />
       ))}
-    </div>
-
-    <div id="no-posts" class="hidden text-center py-12">
-      <p class="text-text-secondary">没有匹配的文章</p>
     </div>
 
     {posts.length === 0 && (
@@ -94,116 +31,5 @@ const paginatedPosts = posts.slice(0, POSTS_PER_PAGE);
         还没有文章，敬请期待...
       </p>
     )}
-
-    {/* 分页导航 */}
-    {totalPages > 1 && (
-      <nav class="mt-12 flex justify-center items-center gap-2" aria-label="分页导航">
-        {currentPage > 1 && (
-          <a
-            href={currentPage === 2 ? '/blog' : `/blog/${currentPage - 1}`}
-            class="px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-primary hover:bg-surface dark:hover:bg-surface-dark transition-colors"
-          >
-            &larr; 上一页
-          </a>
-        )}
-
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-          <a
-            href={page === 1 ? '/blog' : `/blog/${page}`}
-            class:list={[
-              'px-3 py-2 rounded-lg text-sm transition-colors',
-              page === currentPage
-                ? 'bg-primary text-white'
-                : 'text-text-secondary hover:text-primary hover:bg-surface dark:hover:bg-surface-dark'
-            ]}
-          >
-            {page}
-          </a>
-        ))}
-
-        {currentPage < totalPages && (
-          <a
-            href={`/blog/${currentPage + 1}`}
-            class="px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-primary hover:bg-surface dark:hover:bg-surface-dark transition-colors"
-          >
-            下一页 &rarr;
-          </a>
-        )}
-      </nav>
-    )}
-
-    {/* 筛选时隐藏分页 */}
-    <div id="pagination-wrapper">
-      {/* 分页导航会通过脚本控制显示/隐藏 */}
-    </div>
   </div>
 </BaseLayout>
-
-<script>
-  let activeCategory = 'all';
-  let activeTag = 'all';
-
-  function filterPosts() {
-    const items = document.querySelectorAll('.post-item');
-    let visibleCount = 0;
-
-    items.forEach(item => {
-      const category = item.getAttribute('data-category') || '';
-      const tags = (item.getAttribute('data-tags') || '').split(',');
-
-      const matchCategory = activeCategory === 'all' || category === activeCategory;
-      const matchTag = activeTag === 'all' || tags.includes(activeTag);
-
-      if (matchCategory && matchTag) {
-        (item as HTMLElement).style.display = '';
-        visibleCount++;
-      } else {
-        (item as HTMLElement).style.display = 'none';
-      }
-    });
-
-    const noPosts = document.getElementById('no-posts');
-    if (noPosts) {
-      noPosts.classList.toggle('hidden', visibleCount > 0);
-    }
-
-    // 筛选时隐藏分页导航
-    const pagination = document.querySelector('nav[aria-label="分页导航"]');
-    if (pagination) {
-      const isFiltering = activeCategory !== 'all' || activeTag !== 'all';
-      (pagination as HTMLElement).style.display = isFiltering ? 'none' : '';
-    }
-  }
-
-  // 分类按钮事件
-  document.querySelectorAll('.category-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      activeCategory = btn.getAttribute('data-category') || 'all';
-
-      document.querySelectorAll('.category-btn').forEach(b => {
-        b.classList.remove('bg-primary', 'text-white');
-        b.classList.add('bg-surface', 'dark:bg-surface-dark', 'text-text-secondary');
-      });
-      btn.classList.remove('bg-surface', 'dark:bg-surface-dark', 'text-text-secondary');
-      btn.classList.add('bg-primary', 'text-white');
-
-      filterPosts();
-    });
-  });
-
-  // 标签按钮事件
-  document.querySelectorAll('.tag-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      activeTag = btn.getAttribute('data-tag') || 'all';
-
-      document.querySelectorAll('.tag-btn').forEach(b => {
-        b.classList.remove('bg-primary', 'text-white');
-        b.classList.add('bg-surface', 'dark:bg-surface-dark', 'text-text-secondary');
-      });
-      btn.classList.remove('bg-surface', 'dark:bg-surface-dark', 'text-text-secondary');
-      btn.classList.add('bg-primary', 'text-white');
-
-      filterPosts();
-    });
-  });
-</script>

@@ -26,7 +26,7 @@ seriesMap.forEach((seriesNotes, series) => {
 ---
 
 <BaseLayout title="笔记" description="物理、数学学习笔记">
-  <div class="max-w-4xl mx-auto px-4 py-12">
+  <div class="max-w-4xl mx-auto px-4 py-12" data-pagefind-body>
     <h1 class="text-3xl font-bold mb-8 text-text dark:text-text-dark">学习笔记</h1>
 
     {/* 系列笔记 */}
@@ -46,7 +46,7 @@ seriesMap.forEach((seriesNotes, series) => {
                       {note.data.order || index + 1}
                     </span>
                     <a
-                      href={`/notes/${note.id}`}
+                      href={`/notes/${note.id}/`}
                       class="text-text dark:text-text-dark hover:text-primary transition-colors"
                     >
                       {note.data.title}
@@ -67,7 +67,7 @@ seriesMap.forEach((seriesNotes, series) => {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {standaloneNotes.map(note => (
             <a
-              href={`/notes/${note.id}`}
+              href={`/notes/${note.id}/`}
               class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
             >
               <h3 class="font-semibold mb-2 text-text dark:text-text-dark">{note.data.title}</h3>

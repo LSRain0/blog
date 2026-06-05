@@ -23,7 +23,7 @@ const prevProject = currentIndex < allProjects.length - 1 ? allProjects[currentI
 const nextProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
 ---
 
-<BaseLayout title={project.data.title} description={project.data.description}>
+<BaseLayout title={project.data.title} description={project.data.description} image={project.data.cover}>
   <article class="max-w-4xl mx-auto px-4 py-12">
     <header class="mb-8">
       <h1 class="text-3xl md:text-4xl font-bold mb-4">{project.data.title}</h1>
@@ -83,7 +83,7 @@ const nextProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
         <div>
           {prevProject && (
             <a
-              href={`/projects/${prevProject.id}`}
+              href={`/projects/${prevProject.id}/`}
               class="text-primary hover:text-primary-dark transition-colors"
             >
               ← {prevProject.data.title}
@@ -91,7 +91,7 @@ const nextProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
           )}
         </div>
         <a
-          href="/projects"
+          href="/projects/"
           class="text-text-secondary hover:text-primary transition-colors"
         >
           返回项目列表
@@ -99,7 +99,7 @@ const nextProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
         <div>
           {nextProject && (
             <a
-              href={`/projects/${nextProject.id}`}
+              href={`/projects/${nextProject.id}/`}
               class="text-primary hover:text-primary-dark transition-colors"
             >
               {nextProject.data.title} →

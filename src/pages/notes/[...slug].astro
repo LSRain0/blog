@@ -30,7 +30,7 @@ const prevNote = currentIndex > 0 ? seriesNotes[currentIndex - 1] : null;
 const nextNote = currentIndex < seriesNotes.length - 1 ? seriesNotes[currentIndex + 1] : null;
 ---
 
-<BaseLayout title={note.data.title} description={note.data.description}>
+<BaseLayout title={note.data.title} description={note.data.description} image={note.data.cover}>
   <div class="max-w-7xl mx-auto px-4 py-12">
     <div class="flex gap-8">
       {/* 左侧边栏 - 目录 */}
@@ -58,7 +58,7 @@ const nextNote = currentIndex < seriesNotes.length - 1 ? seriesNotes[currentInde
             <div class="flex flex-wrap gap-2 mt-4">
               {note.data.tags.map(tag => (
                 <a
-                  href={`/tags/${tag}`}
+                  href={`/tags/${encodeURIComponent(tag)}/`}
                   class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                 >
                   #{tag}
@@ -79,7 +79,7 @@ const nextNote = currentIndex < seriesNotes.length - 1 ? seriesNotes[currentInde
           <nav class="flex justify-between">
             {prevNote && (
               <a
-                href={`/notes/${prevNote.id}`}
+                href={`/notes/${prevNote.id}/`}
                 class="text-primary hover:text-primary-dark transition-colors"
               >
                 ← {prevNote.data.title}
@@ -87,7 +87,7 @@ const nextNote = currentIndex < seriesNotes.length - 1 ? seriesNotes[currentInde
             )}
             {nextNote && (
               <a
-                href={`/notes/${nextNote.id}`}
+                href={`/notes/${nextNote.id}/`}
                 class="text-primary hover:text-primary-dark transition-colors ml-auto"
               >
                 {nextNote.data.title} →
@@ -108,7 +108,7 @@ const nextNote = currentIndex < seriesNotes.length - 1 ? seriesNotes[currentInde
               {seriesNotes.map((n, index) => (
                 <li>
                   <a
-                    href={`/notes/${n.id}`}
+                    href={`/notes/${n.id}/`}
                     class:list={[
                       'flex items-start gap-2 text-sm transition-colors',
                       n.id === note.id

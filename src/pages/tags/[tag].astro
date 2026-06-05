@@ -28,7 +28,7 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft && data.ta
 ---
 
 <BaseLayout title={`标签: ${tag}`} description={`标签 ${tag} 下的所有文章`}>
-  <div class="max-w-4xl mx-auto px-4 py-12">
+  <div class="max-w-4xl mx-auto px-4 py-12" data-pagefind-body>
     <h1 class="text-3xl font-bold mb-2">标签</h1>
     <p class="text-xl text-text-secondary mb-8">#{tag}</p>
 
@@ -58,7 +58,7 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft && data.ta
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {notes.map(note => (
             <a
-              href={`/notes/${note.id}`}
+              href={`/notes/${note.id}/`}
               class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
             >
               <h3 class="font-semibold mb-2">{note.data.title}</h3>
@@ -76,7 +76,7 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft && data.ta
     )}
 
     <div class="mt-8">
-      <a href="/tags" class="text-primary hover:text-primary-dark transition-colors">
+      <a href="/tags/" class="text-primary hover:text-primary-dark transition-colors">
         ← 返回所有标签
       </a>
     </div>
