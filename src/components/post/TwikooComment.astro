@@ -11,11 +11,11 @@ const { path } = Astro.props;
 
 <div id="twikoo-comments" class="mt-12 pt-8 border-t border-border dark:border-border-dark"></div>
 
-<script is:inline src="https://unpkg.com/twikoo@1.6.40/dist/twikoo.all.min.js"></script>
+<script is:inline src="https://registry.npmmirror.com/twikoo/1.6.42/files/dist/twikoo.min.js"></script>
 
 <script is:inline define:vars={{ path }}>
   // Twikoo 服务端地址
-  const TWIKOO_ENV_ID = 'https://twikoo-cloudflare.lsrain0824.workers.dev';
+  const TWIKOO_ENV_ID = 'https://twikoo.lsrain-blog.com';
 
   function initTwikoo() {
     const container = document.getElementById('twikoo-comments');
