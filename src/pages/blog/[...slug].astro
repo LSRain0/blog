@@ -61,7 +61,7 @@ const jsonLd = [
       {/* 侧边栏 - 目录 */}
       <aside class="hidden lg:block w-64 flex-shrink-0">
         <div class="sticky top-24">
-          <TableOfContents headings={headings} class="p-4 rounded-lg bg-surface dark:bg-surface-dark" />
+          <TableOfContents headings={headings} class="p-4 rounded-xl glass" />
         </div>
       </aside>
 
@@ -70,17 +70,25 @@ const jsonLd = [
         <header class="mb-8">
           <h1 class="text-3xl md:text-4xl font-bold mb-4">{post.data.title}</h1>
           <div class="flex flex-wrap items-center gap-3 text-sm text-text-secondary">
-            <time datetime={post.data.pubDate.toISOString()}>
+            <time datetime={post.data.pubDate.toISOString()} class="flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
               {formatDate(post.data.pubDate)}
             </time>
             {post.data.updatedDate && (
-              <span class="text-xs">
+              <span class="text-xs opacity-70">
                 (更新于 {formatDate(post.data.updatedDate)})
               </span>
             )}
-            <span>· {readingTime} 分钟阅读</span>
+            <span class="flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {readingTime} 分钟阅读
+            </span>
             {post.data.category && (
-              <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+              <span class="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
                 {post.data.category}
               </span>
             )}
@@ -90,7 +98,7 @@ const jsonLd = [
               {post.data.tags.map(tag => (
                 <a
                   href={`/tags/${encodeURIComponent(tag)}/`}
-                  class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  class="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/15 transition-colors duration-200"
                 >
                   #{tag}
                 </a>
@@ -106,22 +114,39 @@ const jsonLd = [
         {/* 评论区 */}
         <TwikooComment path={`/blog/${post.id}`} />
 
+        {/* 上下篇导航 */}
         <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
-          <nav class="flex justify-between">
+          <nav class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {prevPost && (
               <a
                 href={`/blog/${prevPost.id}/`}
-                class="text-primary hover:text-primary-dark transition-colors"
+                class="group p-4 rounded-xl glass glass-hover transition-all duration-200"
               >
-                ← {prevPost.data.title}
+                <span class="text-xs text-text-secondary flex items-center gap-1 mb-1">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                  上一篇
+                </span>
+                <span class="text-sm font-medium text-text dark:text-text-dark group-hover:text-primary transition-colors line-clamp-1">
+                  {prevPost.data.title}
+                </span>
               </a>
             )}
             {nextPost && (
               <a
                 href={`/blog/${nextPost.id}/`}
-                class="text-primary hover:text-primary-dark transition-colors ml-auto"
+                class="group p-4 rounded-xl glass glass-hover transition-all duration-200 md:text-right md:ml-auto"
               >
-                {nextPost.data.title} →
+                <span class="text-xs text-text-secondary flex items-center gap-1 mb-1 md:justify-end">
+                  下一篇
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+                <span class="text-sm font-medium text-text dark:text-text-dark group-hover:text-primary transition-colors line-clamp-1">
+                  {nextPost.data.title}
+                </span>
               </a>
             )}
           </nav>

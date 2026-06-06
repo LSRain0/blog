@@ -15,7 +15,7 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
           id="search-input"
           type="text"
           placeholder="输入关键词搜索文章和笔记..."
-          class="w-full pl-12 pr-4 py-3 rounded-xl border border-border dark:border-border-dark bg-background dark:bg-background-dark text-text dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+          class="w-full pl-12 pr-4 py-3.5 rounded-xl glass text-text dark:text-text-dark placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-200"
           autofocus
         />
       </div>
@@ -48,8 +48,8 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
 
     function getTypeLabel(url) {
       if (url.includes('/blog/')) return { label: '文章', color: 'bg-primary/10 text-primary' };
-      if (url.includes('/notes/')) return { label: '笔记', color: 'bg-accent/10 text-accent' };
-      if (url.includes('/projects/')) return { label: '项目', color: 'bg-secondary/10 text-secondary' };
+      if (url.includes('/notes/')) return { label: '笔记', color: 'bg-amber-500/10 text-amber-500' };
+      if (url.includes('/projects/')) return { label: '项目', color: 'bg-purple-500/10 text-purple-500' };
       return { label: '页面', color: 'bg-surface dark:bg-surface-dark text-text-secondary' };
     }
 
@@ -78,9 +78,9 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
         const tagList = tags ? tags.split(',').filter(Boolean).slice(0, 3) : [];
 
         html.push(`
-          <a href="${data.url}" class="block p-6 rounded-xl border border-border dark:border-border-dark bg-background dark:bg-background-dark hover:shadow-lg transition-all duration-300">
+          <a href="${data.url}" class="block p-6 rounded-xl glass hover:shadow-glass-hover hover:-translate-y-0.5 transition-all duration-200">
             <div class="flex items-center gap-2 mb-2">
-              <span class="text-xs px-2 py-0.5 rounded-full ${type.color}">${type.label}</span>
+              <span class="text-xs px-2 py-0.5 rounded-full ${type.color} font-medium">${type.label}</span>
               ${data.meta?.title ? `<h3 class="text-lg font-semibold text-text dark:text-text-dark">${data.meta.title}</h3>` : '<h3 class="text-lg font-semibold text-text dark:text-text-dark">无标题</h3>'}
             </div>
             <p class="text-sm text-text-secondary line-clamp-3">${data.excerpt}</p>

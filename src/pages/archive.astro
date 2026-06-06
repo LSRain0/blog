@@ -54,11 +54,11 @@ const years = Array.from(itemsByYear.keys()).sort((a, b) => b - a);
 
     <div class="flex gap-4 mb-8 text-sm">
       <span class="flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-primary"></span>
+        <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-primary to-blue-400"></span>
         文章
       </span>
       <span class="flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-accent"></span>
+        <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-amber-500 to-orange-400"></span>
         笔记
       </span>
     </div>
@@ -66,28 +66,35 @@ const years = Array.from(itemsByYear.keys()).sort((a, b) => b - a);
     <div class="space-y-12">
       {years.map(year => (
         <section>
-          <h2 class="text-2xl font-semibold mb-4 text-text dark:text-text-dark">{year}</h2>
-          <div class="space-y-3">
+          <h2 class="text-2xl font-semibold mb-5 text-text dark:text-text-dark flex items-center gap-3">
+            <span>{year}</span>
+            <span class="flex-1 h-px bg-gradient-to-r from-border dark:from-border-dark to-transparent"></span>
+          </h2>
+          <div class="relative pl-6 border-l-2 border-border/50 dark:border-border-dark/50 space-y-1">
             {itemsByYear.get(year)?.map(item => (
               <a
                 href={item.type === 'post' ? `/blog/${item.id}/` : `/notes/${item.id}/`}
-                class="flex items-baseline gap-4 group py-2"
+                class="group relative flex items-baseline gap-4 py-2.5 px-4 -ml-6 rounded-lg hover:bg-surface/30 dark:hover:bg-surface-dark/30 transition-colors duration-200"
               >
+                {/* 时间线圆点 */}
+                <span class:list={[
+                  'absolute left-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full border-2 border-background dark:border-background-dark z-10',
+                  item.type === 'post'
+                    ? 'bg-gradient-to-br from-primary to-blue-400'
+                    : 'bg-gradient-to-br from-amber-500 to-orange-400',
+                ]} />
+
                 <time
                   datetime={item.pubDate.toISOString()}
-                  class="text-sm text-text-secondary flex-shrink-0 w-20"
+                  class="text-sm text-text-secondary flex-shrink-0 w-20 pl-2"
                 >
                   {item.pubDate.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
                 </time>
-                <span class:list={[
-                  'w-2 h-2 rounded-full flex-shrink-0',
-                  item.type === 'post' ? 'bg-primary' : 'bg-accent',
-                ]} />
                 <span class="group-hover:text-primary transition-colors text-text dark:text-text-dark">
                   {item.title}
                 </span>
                 {item.seriesTitle && (
-                  <span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500">
                     {item.seriesTitle}
                   </span>
                 )}

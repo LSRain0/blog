@@ -64,14 +64,14 @@ const jsonLd = [
     {seriesNotes.length > 0 && (
       <nav class="mb-6 text-sm text-text-secondary" aria-label="系列导航">
         <a href="/notes/" class="hover:text-primary transition-colors">笔记</a>
-        <span class="mx-2">/</span>
+        <span class="mx-2 opacity-50">/</span>
         <a
           href={`/notes/`}
           class="hover:text-primary transition-colors"
         >
           {note.data.seriesTitle || note.data.series}
         </a>
-        <span class="mx-2">/</span>
+        <span class="mx-2 opacity-50">/</span>
         <span class="text-text dark:text-text-dark">第 {currentIndex + 1} 章</span>
       </nav>
     )}
@@ -83,7 +83,7 @@ const jsonLd = [
       {/* 左侧边栏 - 目录 */}
       <aside class="hidden lg:block w-64 flex-shrink-0">
         <div class="sticky top-24">
-          <TableOfContents headings={headings} class="p-4 rounded-lg bg-surface dark:bg-surface-dark" />
+          <TableOfContents headings={headings} class="p-4 rounded-xl glass" />
         </div>
       </aside>
 
@@ -92,22 +92,30 @@ const jsonLd = [
         <header class="mb-8">
           <h1 class="text-3xl md:text-4xl font-bold mb-4">{note.data.title}</h1>
           <div class="flex flex-wrap items-center gap-3 text-sm text-text-secondary">
-            <time datetime={note.data.pubDate.toISOString()}>
+            <time datetime={note.data.pubDate.toISOString()} class="flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
               {formatDate(note.data.pubDate)}
             </time>
             {note.data.updatedDate && (
-              <span class="text-xs">
+              <span class="text-xs opacity-70">
                 (更新于 {formatDate(note.data.updatedDate)})
               </span>
             )}
-            <span>· {readingTime} 分钟阅读</span>
+            <span class="flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {readingTime} 分钟阅读
+            </span>
           </div>
           {note.data.tags.length > 0 && (
             <div class="flex flex-wrap gap-2 mt-4">
               {note.data.tags.map(tag => (
                 <a
                   href={`/tags/${encodeURIComponent(tag)}/`}
-                  class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  class="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/15 transition-colors duration-200"
                 >
                   #{tag}
                 </a>
@@ -124,21 +132,37 @@ const jsonLd = [
         <TwikooComment path={`/notes/${note.id}`} />
 
         <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
-          <nav class="flex justify-between">
+          <nav class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {prevNote && (
               <a
                 href={`/notes/${prevNote.id}/`}
-                class="text-primary hover:text-primary-dark transition-colors"
+                class="group p-4 rounded-xl glass glass-hover transition-all duration-200"
               >
-                ← {prevNote.data.title}
+                <span class="text-xs text-text-secondary flex items-center gap-1 mb-1">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                  上一篇
+                </span>
+                <span class="text-sm font-medium text-text dark:text-text-dark group-hover:text-primary transition-colors line-clamp-1">
+                  {prevNote.data.title}
+                </span>
               </a>
             )}
             {nextNote && (
               <a
                 href={`/notes/${nextNote.id}/`}
-                class="text-primary hover:text-primary-dark transition-colors ml-auto"
+                class="group p-4 rounded-xl glass glass-hover transition-all duration-200 md:text-right md:ml-auto"
               >
-                {nextNote.data.title} →
+                <span class="text-xs text-text-secondary flex items-center gap-1 mb-1 md:justify-end">
+                  下一篇
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+                <span class="text-sm font-medium text-text dark:text-text-dark group-hover:text-primary transition-colors line-clamp-1">
+                  {nextNote.data.title}
+                </span>
               </a>
             )}
           </nav>
@@ -148,7 +172,7 @@ const jsonLd = [
       {/* 右侧边栏 - 系列导航 */}
       {seriesNotes.length > 0 && (
         <aside class="hidden xl:block w-64 flex-shrink-0">
-          <nav class="sticky top-24 p-4 rounded-lg bg-surface dark:bg-surface-dark">
+          <nav class="sticky top-24 p-4 rounded-xl glass">
             <h2 class="text-sm font-semibold mb-3 text-text dark:text-text-dark">
               {note.data.seriesTitle || note.data.series}
             </h2>
@@ -158,7 +182,7 @@ const jsonLd = [
                   <a
                     href={`/notes/${n.id}/`}
                     class:list={[
-                      'flex items-start gap-2 text-sm transition-colors',
+                      'flex items-start gap-2 text-sm transition-colors py-1',
                       n.id === note.id
                         ? 'text-primary font-medium'
                         : 'text-text dark:text-text-dark hover:text-primary'

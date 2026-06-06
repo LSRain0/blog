@@ -52,7 +52,7 @@ const posts = allPosts.slice(start, start + POSTS_PER_PAGE);
       {pageNum > 1 && (
         <a
           href={pageNum === 2 ? '/blog/' : `/blog/page/${pageNum - 1}/`}
-          class="px-4 py-2 rounded-lg border border-border dark:border-border-dark hover:bg-surface dark:hover:bg-surface-dark text-text dark:text-text-dark transition-colors text-sm"
+          class="px-4 py-2 rounded-xl glass hover:bg-primary/10 hover:text-primary text-text dark:text-text-dark transition-all duration-200 text-sm"
         >
           上一页
         </a>
@@ -62,10 +62,10 @@ const posts = allPosts.slice(start, start + POSTS_PER_PAGE);
         <a
           href={page === 1 ? '/blog/' : `/blog/page/${page}/`}
           class:list={[
-            'px-3 py-2 rounded-lg text-sm transition-colors',
+            'px-3 py-2 rounded-xl text-sm transition-all duration-200',
             page === pageNum
-              ? 'bg-primary text-white'
-              : 'border border-border dark:border-border-dark hover:bg-surface dark:hover:bg-surface-dark text-text dark:text-text-dark'
+              ? 'bg-primary text-white shadow-lg shadow-primary/20'
+              : 'glass hover:bg-primary/10 hover:text-primary text-text dark:text-text-dark'
           ]}
         >
           {page}
@@ -75,7 +75,7 @@ const posts = allPosts.slice(start, start + POSTS_PER_PAGE);
       {pageNum < totalPages && (
         <a
           href={`/blog/page/${pageNum + 1}/`}
-          class="px-4 py-2 rounded-lg border border-border dark:border-border-dark hover:bg-surface dark:hover:bg-surface-dark text-text dark:text-text-dark transition-colors text-sm"
+          class="px-4 py-2 rounded-xl glass hover:bg-primary/10 hover:text-primary text-text dark:text-text-dark transition-all duration-200 text-sm"
         >
           下一页
         </a>

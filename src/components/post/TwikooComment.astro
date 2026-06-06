@@ -7,14 +7,14 @@ interface Props {
 }
 
 const { path } = Astro.props;
-const TWIKOO_ENV_ID = 'https://twikoo.lsrain-blog.com';
+const TWIKOO_ENV_ID = import.meta.env.PUBLIC_TWIKOO_ENV_ID || 'https://twikoo.lsrain-blog.com';
 ---
 
 <div id="twikoo-comments" class="mt-12 pt-8 border-t border-border dark:border-border-dark">
   <p id="twikoo-fallback" class="text-sm text-text-secondary text-center py-4">评论加载中...</p>
 </div>
 
-<script is:inline src="https://cdn.jsdelivr.net/npm/twikoo@1.6.42/dist/twikoo.min.js" onerror="document.getElementById('twikoo-fallback').textContent='评论系统加载失败，请刷新重试'"></script>
+<script is:inline src="https://cdn.jsdelivr.net/npm/twikoo@1.6.43/dist/twikoo.min.js" onerror="document.getElementById('twikoo-fallback').textContent='评论系统加载失败，请刷新重试'"></script>
 
 <script is:inline define:vars={{ path, TWIKOO_ENV_ID }}>
   function initTwikoo() {

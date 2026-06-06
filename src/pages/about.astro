@@ -1,11 +1,36 @@
 ---
 import BaseLayout from '../components/layout/BaseLayout.astro';
+
+const skills = [
+  {
+    title: '物理学',
+    color: 'from-blue-500 to-cyan-500',
+    icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z',
+    items: ['经典力学与分析力学', '电磁学', '热学与统计力学', '量子力学'],
+  },
+  {
+    title: '数学',
+    color: 'from-purple-500 to-pink-500',
+    icon: 'M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z',
+    items: ['数学分析', '线性代数', '微分方程', '概率论与数理统计'],
+  },
+  {
+    title: '计算机科学',
+    color: 'from-emerald-500 to-teal-500',
+    icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+    items: ['Python / C++', 'Web 开发', '数据可视化', '算法与数据结构'],
+  },
+  {
+    title: 'AI 相关',
+    color: 'from-amber-500 to-orange-500',
+    icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
+    items: ['Vibe Coding', 'PyTorch', 'AI Agent', 'AI for Science'],
+  },
+];
 ---
 
 <BaseLayout title="关于" description="关于 LSRain">
   <div class="max-w-4xl mx-auto px-4 py-12" data-pagefind-body>
-    <!-- 头部区域 -->
-
     <div class="prose prose-lg dark:prose-invert max-w-none">
       <h2>个人简介</h2>
       <p>
@@ -15,42 +40,26 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
 
       <h2>学习方向</h2>
       <div class="not-prose grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-        <div class="p-4 rounded-xl border border-border dark:border-border-dark">
-          <h3 class="font-semibold mb-2 text-primary">物理学</h3>
-          <ul class="text-sm text-text-secondary space-y-1">
-            <li>经典力学与分析力学</li>
-            <li>电磁学</li>
-            <li>热学与统计力学</li>
-            <li>量子力学</li>
-          </ul>
-        </div>
-        <div class="p-4 rounded-xl border border-border dark:border-border-dark">
-          <h3 class="font-semibold mb-2 text-primary">数学</h3>
-          <ul class="text-sm text-text-secondary space-y-1">
-            <li>数学分析</li>
-            <li>线性代数</li>
-            <li>微分方程</li>
-            <li>概率论与数理统计</li>
-          </ul>
-        </div>
-        <div class="p-4 rounded-xl border border-border dark:border-border-dark">
-          <h3 class="font-semibold mb-2 text-primary">计算机科学</h3>
-          <ul class="text-sm text-text-secondary space-y-1">
-            <li>Python / C++</li>
-            <li>Web 开发</li>
-            <li>数据可视化</li>
-            <li>算法与数据结构</li>
-          </ul>
-        </div>
-        <div class="p-4 rounded-xl border border-border dark:border-border-dark">
-          <h3 class="font-semibold mb-2 text-primary">AI 相关</h3>
-          <ul class="text-sm text-text-secondary space-y-1">
-            <li>Vibe Coding</li>
-            <li>PyTorch</li>
-            <li>AI Agent</li>
-            <li>AI for Science</li>
-          </ul>
-        </div>
+        {skills.map(skill => (
+          <div class="group p-5 rounded-xl glass glass-hover transition-all duration-200">
+            <div class="flex items-center gap-3 mb-3">
+              <div class={`p-2 rounded-lg bg-gradient-to-br ${skill.color} text-white`}>
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={skill.icon} />
+                </svg>
+              </div>
+              <h3 class="font-semibold text-text dark:text-text-dark">{skill.title}</h3>
+            </div>
+            <ul class="text-sm text-text-secondary space-y-1.5 ml-1">
+              {skill.items.map(item => (
+                <li class="flex items-center gap-2">
+                  <span class="w-1 h-1 rounded-full bg-text-secondary/40"></span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
 
       <h2>关于这个博客</h2>

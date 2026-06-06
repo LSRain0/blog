@@ -29,12 +29,17 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft && data.ta
 
 <BaseLayout title={`标签: ${tag}`} description={`标签 ${tag} 下的所有文章`}>
   <div class="max-w-4xl mx-auto px-4 py-12" data-pagefind-body>
-    <h1 class="text-3xl font-bold mb-2">标签</h1>
-    <p class="text-xl text-text-secondary mb-8">#{tag}</p>
+    <h1 class="text-3xl font-bold mb-2 text-text dark:text-text-dark">标签</h1>
+    <p class="text-xl text-text-secondary mb-8">
+      <span class="px-3 py-1 rounded-full bg-primary/10 text-primary">#{tag}</span>
+    </p>
 
     {posts.length > 0 && (
       <section class="mb-12">
-        <h2 class="text-2xl font-semibold mb-4">文章</h2>
+        <div class="flex items-center gap-3 mb-6">
+          <h2 class="text-2xl font-semibold text-text dark:text-text-dark">文章</h2>
+          <div class="flex-1 h-px bg-gradient-to-r from-border dark:from-border-dark to-transparent"></div>
+        </div>
         <div class="space-y-4">
           {posts.map(post => (
             <PostCard
@@ -54,14 +59,17 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft && data.ta
 
     {notes.length > 0 && (
       <section>
-        <h2 class="text-2xl font-semibold mb-4">笔记</h2>
+        <div class="flex items-center gap-3 mb-6">
+          <h2 class="text-2xl font-semibold text-text dark:text-text-dark">笔记</h2>
+          <div class="flex-1 h-px bg-gradient-to-r from-border dark:from-border-dark to-transparent"></div>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {notes.map(note => (
             <a
               href={`/notes/${note.id}/`}
-              class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
+              class="group p-5 rounded-xl glass glass-hover transition-all duration-200"
             >
-              <h3 class="font-semibold mb-2">{note.data.title}</h3>
+              <h3 class="font-semibold mb-2 text-text dark:text-text-dark group-hover:text-primary transition-colors">{note.data.title}</h3>
               <p class="text-sm text-text-secondary line-clamp-2">{note.data.description}</p>
             </a>
           ))}
@@ -76,7 +84,7 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft && data.ta
     )}
 
     <div class="mt-8">
-      <a href="/tags/" class="text-primary hover:text-primary-dark transition-colors">
+      <a href="/tags/" class="text-sm text-primary hover:text-primary-dark transition-colors">
         ← 返回所有标签
       </a>
     </div>

@@ -16,7 +16,7 @@ const { headings } = Astro.props;
   <div class="lg:hidden mb-6">
     <button
       id="mobile-toc-toggle"
-      class="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-surface dark:bg-surface-dark border border-border dark:border-border-dark text-sm font-medium text-text dark:text-text-dark"
+      class="w-full flex items-center justify-between px-4 py-3 rounded-xl glass text-sm font-medium text-text dark:text-text-dark"
       aria-expanded="false"
       aria-controls="mobile-toc-content"
     >
@@ -29,7 +29,7 @@ const { headings } = Astro.props;
       id="mobile-toc-content"
       class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0"
     >
-      <ul class="mt-2 p-4 rounded-lg bg-surface dark:bg-surface-dark border border-border dark:border-border-dark space-y-1">
+      <ul class="mt-2 p-4 rounded-xl glass space-y-1">
         {headings.map(heading => (
           <li>
             <a

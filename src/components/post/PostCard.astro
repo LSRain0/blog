@@ -15,45 +15,68 @@ interface Props {
 
 const { title, description, pubDate, updatedDate, tags, slug, body, category } = Astro.props;
 const readingTime = body ? calculateReadingTime(body) : null;
+
+const categoryColors: Record<string, string> = {
+  '技术': 'bg-blue-500',
+  '生活': 'bg-emerald-500',
+  '学习': 'bg-amber-500',
+  '项目': 'bg-purple-500',
+};
+const barColor = category ? (categoryColors[category] || 'bg-primary') : 'bg-primary';
 ---
 
-<article class="group p-6 rounded-xl border border-border dark:border-border-dark bg-background dark:bg-background-dark hover:shadow-lg transition-all duration-300">
-  <div class="flex flex-col gap-3">
-    <div class="flex items-center gap-2 text-sm text-text-secondary">
-      <time datetime={pubDate.toISOString()}>
+<article class="group relative p-6 rounded-xl glass glass-hover transition-all duration-200 overflow-hidden">
+  {/* 左侧分类色彩条 */}
+  <div class={`absolute left-0 top-0 w-[3px] h-full ${barColor} rounded-l-xl opacity-60 group-hover:opacity-100 transition-opacity`}></div>
+
+  <div class="flex flex-col gap-3 pl-2">
+    {/* 元信息 */}
+    <div class="flex flex-wrap items-center gap-2 text-sm text-text-secondary">
+      <time datetime={pubDate.toISOString()} class="flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
         {formatDate(pubDate)}
       </time>
       {updatedDate && (
-        <span class="text-xs">
+        <span class="text-xs opacity-70">
           (更新于 {formatDate(updatedDate)})
         </span>
       )}
       {readingTime && (
-        <span class="text-xs">· {readingTime} 分钟阅读</span>
+        <span class="flex items-center gap-1 text-xs">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {readingTime} 分钟
+        </span>
       )}
       {category && (
-        <span class="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+        <span class="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
           {category}
         </span>
       )}
     </div>
 
+    {/* 标题 */}
     <a href={`/blog/${slug}/`} class="block">
-      <h3 class="text-xl font-semibold text-text dark:text-text-dark group-hover:text-primary transition-colors">
+      <h3 class="text-xl font-semibold text-text dark:text-text-dark group-hover:text-primary transition-colors duration-200">
         {title}
       </h3>
     </a>
 
-    <p class="text-text-secondary line-clamp-2">
+    {/* 描述 */}
+    <p class="text-text-secondary line-clamp-2 leading-relaxed">
       {description}
     </p>
 
+    {/* 标签 */}
     {tags.length > 0 && (
       <div class="flex flex-wrap gap-2">
         {tags.map(tag => (
           <a
             href={`/tags/${encodeURIComponent(tag)}/`}
-            class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+            class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/15 transition-colors duration-200"
           >
             #{tag}
           </a>

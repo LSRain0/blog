@@ -33,16 +33,16 @@ seriesMap.forEach((seriesNotes, series) => {
     {seriesMap.size > 0 && (
       <section class="mb-12">
         <h2 class="text-2xl font-semibold mb-6 text-text dark:text-text-dark">系列笔记</h2>
-        <div class="space-y-8">
+        <div class="space-y-6">
           {Array.from(seriesMap.entries()).map(([series, seriesNotes]) => (
-            <div class="p-6 rounded-xl border border-border dark:border-border-dark">
+            <div class="p-6 rounded-xl glass">
               <h3 class="text-xl font-semibold mb-4 text-text dark:text-text-dark">
                 {seriesNotes[0].data.seriesTitle || series}
               </h3>
               <ol class="space-y-2">
                 {seriesNotes.map((note, index) => (
                   <li class="flex items-start gap-3">
-                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-sm flex items-center justify-center">
+                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-sm flex items-center justify-center font-medium">
                       {note.data.order || index + 1}
                     </span>
                     <a
@@ -68,16 +68,16 @@ seriesMap.forEach((seriesNotes, series) => {
           {standaloneNotes.map(note => (
             <a
               href={`/notes/${note.id}/`}
-              class="p-4 rounded-lg border border-border dark:border-border-dark hover:shadow-md transition-all"
+              class="group p-5 rounded-xl glass glass-hover transition-all duration-200"
             >
-              <h3 class="font-semibold mb-2 text-text dark:text-text-dark">{note.data.title}</h3>
+              <h3 class="font-semibold mb-2 text-text dark:text-text-dark group-hover:text-primary transition-colors">{note.data.title}</h3>
               <p class="text-sm text-text-secondary line-clamp-2">{note.data.description}</p>
               <div class="flex items-center gap-2 mt-3 text-xs text-text-secondary">
                 <time datetime={note.data.pubDate.toISOString()}>
                   {note.data.pubDate.toLocaleDateString('zh-CN')}
                 </time>
                 {note.data.tags.length > 0 && (
-                  <span>· {note.data.tags[0]}</span>
+                  <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary">#{note.data.tags[0]}</span>
                 )}
               </div>
             </a>

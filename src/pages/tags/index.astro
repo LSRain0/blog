@@ -17,10 +17,10 @@ const maxCount = sortedTags.length > 0 ? sortedTags[0][1] : 1;
 
 function getTagSize(count: number): string {
   const ratio = count / maxCount;
-  if (ratio >= 0.8) return 'text-xl font-bold';
-  if (ratio >= 0.5) return 'text-lg font-semibold';
-  if (ratio >= 0.3) return 'text-base font-medium';
-  return 'text-sm';
+  if (ratio >= 0.8) return 'text-base font-semibold px-5 py-2';
+  if (ratio >= 0.5) return 'text-sm font-medium px-4 py-1.5';
+  if (ratio >= 0.3) return 'text-sm px-3.5 py-1.5';
+  return 'text-xs px-3 py-1.5';
 }
 ---
 
@@ -29,17 +29,17 @@ function getTagSize(count: number): string {
     <h1 class="text-3xl font-bold mb-2 text-text dark:text-text-dark">标签</h1>
     <p class="text-text-secondary mb-8">共 {sortedTags.length} 个标签</p>
 
-    <div class="flex flex-wrap gap-3 items-baseline">
+    <div class="flex flex-wrap gap-2.5 items-baseline">
       {sortedTags.map(([tag, count]) => (
         <a
           href={`/tags/${encodeURIComponent(tag)}/`}
           class:list={[
-            'px-4 py-2 rounded-full bg-surface dark:bg-surface-dark hover:bg-primary/10 hover:text-primary transition-colors text-text dark:text-text-dark',
+            'rounded-full glass hover:bg-primary/10 hover:text-primary transition-all duration-200 text-text dark:text-text-dark',
             getTagSize(count),
           ]}
         >
           #{tag}
-          <span class="text-text-secondary text-sm ml-1">({count})</span>
+          <span class="text-text-secondary text-xs ml-1 opacity-60">({count})</span>
         </a>
       ))}
     </div>

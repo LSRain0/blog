@@ -18,23 +18,30 @@ function isActive(href: string): boolean {
 }
 ---
 
-<header class="sticky top-0 z-50 bg-background/80 dark:bg-background-dark/80 backdrop-blur-sm border-b border-border dark:border-border-dark" data-pagefind-ignore>
+<header
+  class="sticky top-0 z-50 backdrop-blur-xl bg-background/60 dark:bg-background-dark/60 border-b border-glass-border dark:border-glass-border-dark"
+  data-pagefind-ignore
+>
   <nav class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-    <a href="/" class="text-xl font-bold text-primary hover:text-primary-dark transition-colors">
+    <a
+      href="/"
+      class="text-xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent hover:from-blue-400 hover:to-primary transition-all"
+    >
       LSRain的小屋
     </a>
 
-    <div class="flex items-center gap-6">
-      <ul class="hidden md:flex items-center gap-6">
+    <div class="flex items-center gap-1">
+      {/* 桌面导航 */}
+      <ul class="hidden md:flex items-center gap-1">
         {navItems.map(item => (
           <li>
             <a
               href={item.href}
               class:list={[
-                'text-sm font-medium transition-colors hover:text-primary',
+                'px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200',
                 isActive(item.href)
-                  ? 'text-primary'
-                  : 'text-text-secondary dark:text-text-secondary'
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-text-secondary hover:text-text dark:hover:text-text-dark hover:bg-surface/50 dark:hover:bg-surface-dark/50'
               ]}
             >
               {item.label}
@@ -43,9 +50,10 @@ function isActive(href: string): boolean {
         ))}
       </ul>
 
+      {/* 背景切换 */}
       <button
         id="bg-toggle"
-        class="p-2 rounded-lg hover:bg-surface dark:hover:bg-surface-dark transition-colors"
+        class="p-2 rounded-lg hover:bg-surface/50 dark:hover:bg-surface-dark/50 transition-colors"
         aria-label="切换背景图片"
         title="切换背景"
       >
@@ -54,9 +62,10 @@ function isActive(href: string): boolean {
         </svg>
       </button>
 
+      {/* 主题切换 */}
       <button
         id="theme-toggle"
-        class="p-2 rounded-lg hover:bg-surface dark:hover:bg-surface-dark transition-colors"
+        class="p-2 rounded-lg hover:bg-surface/50 dark:hover:bg-surface-dark/50 transition-colors"
         aria-label="切换深色模式"
       >
         <svg class="w-5 h-5 hidden dark:block" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -67,9 +76,10 @@ function isActive(href: string): boolean {
         </svg>
       </button>
 
+      {/* 移动端菜单按钮 */}
       <button
         id="mobile-menu-toggle"
-        class="md:hidden p-2 rounded-lg hover:bg-surface dark:hover:bg-surface-dark transition-colors"
+        class="md:hidden p-2 rounded-lg hover:bg-surface/50 dark:hover:bg-surface-dark/50 transition-colors"
         aria-label="打开菜单"
       >
         <svg class="w-5 h-5" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -79,21 +89,21 @@ function isActive(href: string): boolean {
     </div>
   </nav>
 
-  <!-- 移动端菜单 -->
+  {/* 移动端菜单 */}
   <div
     id="mobile-menu"
     class="md:hidden overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0"
   >
-    <ul class="max-w-4xl mx-auto px-4 py-4 space-y-2 bg-background dark:bg-background-dark border-t border-border dark:border-border-dark">
+    <ul class="max-w-4xl mx-auto px-4 py-3 space-y-1 bg-background/80 dark:bg-background-dark/80 backdrop-blur-xl border-t border-glass-border dark:border-glass-border-dark">
       {navItems.map(item => (
         <li>
           <a
             href={item.href}
             class:list={[
-              'mobile-menu-link block py-2 px-4 rounded-lg text-sm font-medium transition-colors',
+              'mobile-menu-link block py-2.5 px-4 rounded-lg text-sm font-medium transition-colors',
               isActive(item.href)
                 ? 'bg-primary/10 text-primary'
-                : 'hover:bg-surface dark:hover:bg-surface-dark'
+                : 'hover:bg-surface/50 dark:hover:bg-surface-dark/50'
             ]}
           >
             {item.label}

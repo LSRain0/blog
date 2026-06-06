@@ -4,24 +4,74 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ========== 设计系统：玻璃拟态风格 ========== */
 @theme {
-  --color-primary: #2563eb;
-  --color-primary-dark: #1d4ed8;
-  --color-secondary: #6b7280;
+  /* 主色 */
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-secondary: #64748b;
   --color-accent: #f59e0b;
+
+  /* 背景与表面 */
   --color-background: #ffffff;
-  --color-background-dark: #111827;
-  --color-surface: #f9fafb;
-  --color-surface-dark: #1f2937;
-  --color-text: #111827;
-  --color-text-dark: #f9fafb;
-  --color-text-secondary: #6b7280;
-  --color-border: #e5e7eb;
-  --color-border-dark: #374151;
+  --color-background-dark: #0f172a;
+  --color-surface: #f8fafc;
+  --color-surface-dark: #1e293b;
+
+  /* 文字 */
+  --color-text: #0f172a;
+  --color-text-dark: #f1f5f9;
+  --color-text-secondary: #64748b;
+
+  /* 边框 */
+  --color-border: #e2e8f0;
+  --color-border-dark: #334155;
+
+  /* 玻璃效果专用 */
+  --color-glass: rgba(255, 255, 255, 0.55);
+  --color-glass-dark: rgba(15, 23, 42, 0.55);
+  --color-glass-border: rgba(255, 255, 255, 0.25);
+  --color-glass-border-dark: rgba(255, 255, 255, 0.08);
+  --color-glass-hover: rgba(255, 255, 255, 0.7);
+  --color-glass-hover-dark: rgba(15, 23, 42, 0.7);
+
+  /* 阴影 */
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.06);
+  --shadow-glass-hover: 0 20px 48px rgba(0, 0, 0, 0.1);
+  --shadow-glass-dark: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --shadow-glass-hover-dark: 0 20px 48px rgba(0, 0, 0, 0.35);
+
+  /* 字体 */
   --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+
+  /* 动画时间 */
+  --animate-duration: 200ms;
+  --animate-duration-slow: 350ms;
+
+  /* 入场动画 */
+  --animate-fade-in-up: fade-in-up 0.5s ease-out both;
+  --animate-fade-in: fade-in 0.4s ease-out both;
 }
 
+/* ========== 入场动画关键帧 ========== */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ========== 全局基础样式 ========== */
 html {
   scroll-behavior: smooth;
 }
@@ -58,7 +108,7 @@ body.bg-loaded::before {
   background-repeat: no-repeat;
 }
 
-/* 浅色模式蒙版 - 白色半透明 */
+/* 浅色模式蒙版 */
 body::after {
   content: '';
   position: fixed;
@@ -66,50 +116,76 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.45);
   z-index: -1;
   transition: background-color 0.3s;
 }
 
-/* 深色模式蒙版 - 深色半透明 */
+/* 深色模式蒙版 */
 .dark body::after {
-  background-color: rgba(17, 24, 39, 0.5);
+  background-color: rgba(15, 23, 42, 0.5);
+}
+
+/* ========== 玻璃效果工具类 ========== */
+.glass {
+  background: var(--color-glass);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: var(--shadow-glass);
+}
+
+.dark .glass {
+  background: var(--color-glass-dark);
+  border-color: var(--color-glass-border-dark);
+  box-shadow: var(--shadow-glass-dark);
+}
+
+.glass-hover:hover {
+  background: var(--color-glass-hover);
+  box-shadow: var(--shadow-glass-hover);
+  transform: translateY(-2px);
+}
+
+.dark .glass-hover:hover {
+  background: var(--color-glass-hover-dark);
+  box-shadow: var(--shadow-glass-hover-dark);
 }
 
 /* 主要内容区域背景 */
 main > div,
 main > article {
-  background-color: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--color-glass);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
   border-radius: 0.75rem;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
-  transition: background-color 0.3s;
+  transition: background 0.3s;
 }
 
 .dark main > div,
 .dark main > article {
-  background-color: rgba(17, 24, 39, 0.85);
+  background: var(--color-glass-dark);
 }
 
-/* 深色模式 prose 文字颜色 */
+/* ========== 深色模式 prose 文字颜色 ========== */
 .dark .prose {
-  --tw-prose-body: #e5e7eb;
-  --tw-prose-headings: #f9fafb;
+  --tw-prose-body: #e2e8f0;
+  --tw-prose-headings: #f1f5f9;
   --tw-prose-links: #60a5fa;
-  --tw-prose-bold: #f9fafb;
-  --tw-prose-counters: #9ca3af;
-  --tw-prose-bullets: #9ca3af;
-  --tw-prose-quotes: #e5e7eb;
-  --tw-prose-quote-borders: #374151;
-  --tw-prose-code: #f9fafb;
-  --tw-prose-pre-bg: #1f2937;
-  --tw-prose-th-borders: #4b5563;
-  --tw-prose-td-borders: #374151;
+  --tw-prose-bold: #f1f5f9;
+  --tw-prose-counters: #94a3b8;
+  --tw-prose-bullets: #94a3b8;
+  --tw-prose-quotes: #e2e8f0;
+  --tw-prose-quote-borders: #334155;
+  --tw-prose-code: #f1f5f9;
+  --tw-prose-pre-bg: #1e293b;
+  --tw-prose-th-borders: #475569;
+  --tw-prose-td-borders: #334155;
 }
 
-/* KaTeX 公式样式 */
+/* ========== KaTeX 公式样式 ========== */
 .katex-display {
   overflow-x: auto;
   overflow-y: hidden;
@@ -120,36 +196,65 @@ main > article {
   font-size: 1.1em;
 }
 
-/* 代码块样式 */
+/* ========== 代码块样式 ========== */
 pre {
   overflow-x: auto;
   padding: 1rem;
   border-radius: 0.5rem;
 }
 
-/* 滚动条样式 */
+/* ========== 滚动条样式 ========== */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-surface);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 4px;
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-secondary);
-}
-
-.dark ::-webkit-scrollbar-track {
-  background: var(--color-surface-dark);
+  background: rgba(148, 163, 184, 0.5);
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: var(--color-border-dark);
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}
+
+/* ========== 焦点状态（可访问性） ========== */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ========== 入场动画延迟工具 ========== */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+
+/* ========== 减少动画支持 ========== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
 }
