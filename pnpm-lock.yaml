@@ -29,9 +29,6 @@ importers:
       remark-math:
         specifier: ^6.0.0
         version: 6.0.0
-      twikoo:
-        specifier: ^1.7.11
-        version: 1.7.11
     devDependencies:
       '@tailwindcss/vite':
         specifier: ^4.3.0
@@ -1592,9 +1589,6 @@ packages:
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
-
-  twikoo@1.7.11:
-    resolution: {integrity: sha512-NOgB7om0Gv9DcYIbwSIHd5Ta65MawuBd1JPO4tOELqfZ9l40e5ZgfGe5A0Zw1uGMFRoDlOAzxYXL41Ter8S4zg==}
 
   ufo@1.6.4:
     resolution: {integrity: sha512-JFNbkD1Svwe0KvGi8GOeLcP4kAWQ609twvCdcHxq1oSL8svv39ZuSvajcD8B+5D0eL4+s1Is2D/O6KN3qcTeRA==}
@@ -3557,8 +3551,6 @@ snapshots:
 
   tslib@2.8.1:
     optional: true
-
-  twikoo@1.7.11: {}
 
   ufo@1.6.4: {}
 
