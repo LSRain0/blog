@@ -4,10 +4,28 @@
 
 <div
   id="reading-progress"
-  class="fixed left-0 h-[3px] z-[60] transition-[width] duration-150"
-  style="top: 2.5rem; width: 0%; background-color: #000;"
+  class="fixed left-0 h-[3px] z-[60] w-0 transition-[width] duration-150"
+  style="top: 40px; background-color: #374151;"
   aria-hidden="true"
 ></div>
+
+<script is:inline>
+  // 根据深色模式动态设置进度条颜色
+  function updateProgressColor() {
+    const bar = document.getElementById('reading-progress');
+    if (!bar) return;
+    if (document.documentElement.classList.contains('dark')) {
+      bar.style.backgroundColor = '#e5e7eb'; // 偏白的亮灰色
+    } else {
+      bar.style.backgroundColor = '#374151'; // 深灰色
+    }
+  }
+
+  // 监听深色模式变化
+  const observer = new MutationObserver(updateProgressColor);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  updateProgressColor();
+</script>
 
 <script>
   function initReadingProgress() {
@@ -21,18 +39,8 @@
       bar.style.width = `${Math.min(progress, 100)}%`;
     }
 
-    function updateColor() {
-      const isDark = document.documentElement.classList.contains('dark');
-      bar.style.backgroundColor = isDark ? '#fff' : '#6b7280';
-    }
-
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();
-    updateColor();
-
-    // 监听深色模式变化
-    const observer = new MutationObserver(updateColor);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
   }
 
   document.addEventListener('astro:page-load', initReadingProgress);

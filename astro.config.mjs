@@ -7,7 +7,7 @@ import rehypeKatex from 'rehype-katex';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://lsrain.vercel.app',
+  site: 'https://lsrain-blog.com',
   trailingSlash: 'always',
   build: {
     format: 'directory',

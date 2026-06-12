@@ -33,24 +33,54 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
 
 <script is:inline>
   window.addEventListener('DOMContentLoaded', async () => {
-    const pagefind = await import('/pagefind/pagefind.js');
-    await pagefind.init();
-
     const input = document.getElementById('search-input');
     const resultsContainer = document.getElementById('search-results');
     const noResults = document.getElementById('no-results');
     let debounceTimer;
+    let pagefind;
+
+    // 加载 Pagefind
+    try {
+      pagefind = await import('/pagefind/pagefind.js');
+      await pagefind.init();
+    } catch (e) {
+      // dev 模式下 pagefind 不可用
+      resultsContainer.innerHTML = `
+        <div class="text-center py-8">
+          <p class="text-text-secondary mb-2">搜索索引仅在构建后可用</p>
+          <p class="text-sm text-text-secondary/60">请运行 <code class="px-2 py-1 rounded bg-surface dark:bg-surface-dark">pnpm build && pnpm preview</code> 后再试</p>
+        </div>
+      `;
+      return;
+    }
 
     input.addEventListener('input', (e) => {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => search(e.target.value), 300);
+      // 同步 URL 参数
+      const q = e.target.value.trim();
+      history.replaceState(null, '', q ? `?q=${encodeURIComponent(q)}` : location.pathname);
     });
+
+    // 从 URL 参数读取初始搜索词
+    const urlParams = new URLSearchParams(location.search);
+    const initialQuery = urlParams.get('q');
+    if (initialQuery) {
+      input.value = initialQuery;
+      search(initialQuery);
+    }
 
     function getTypeLabel(url) {
       if (url.includes('/blog/')) return { label: '文章', color: 'bg-primary/10 text-primary' };
       if (url.includes('/notes/')) return { label: '笔记', color: 'bg-amber-500/10 text-amber-500' };
       if (url.includes('/projects/')) return { label: '项目', color: 'bg-purple-500/10 text-purple-500' };
       return { label: '页面', color: 'bg-surface dark:bg-surface-dark text-text-secondary' };
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
     async function search(query) {
@@ -76,17 +106,18 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
         const type = getTypeLabel(data.url);
         const tags = data.meta?.tags || '';
         const tagList = tags ? tags.split(',').filter(Boolean).slice(0, 3) : [];
+        const title = escapeHtml(data.meta?.title || '无标题');
 
         html.push(`
           <a href="${data.url}" class="block p-6 rounded-xl glass hover:shadow-glass-hover hover:-translate-y-0.5 transition-all duration-200">
             <div class="flex items-center gap-2 mb-2">
               <span class="text-xs px-2 py-0.5 rounded-full ${type.color} font-medium">${type.label}</span>
-              ${data.meta?.title ? `<h3 class="text-lg font-semibold text-text dark:text-text-dark">${data.meta.title}</h3>` : '<h3 class="text-lg font-semibold text-text dark:text-text-dark">无标题</h3>'}
+              <h3 class="text-lg font-semibold text-text dark:text-text-dark">${title}</h3>
             </div>
             <p class="text-sm text-text-secondary line-clamp-3">${data.excerpt}</p>
             ${tagList.length > 0 ? `
               <div class="flex flex-wrap gap-1.5 mt-3">
-                ${tagList.map(tag => `<span class="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">#${tag.trim()}</span>`).join('')}
+                ${tagList.map(tag => `<span class="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">#${escapeHtml(tag.trim())}</span>`).join('')}
               </div>
             ` : ''}
           </a>

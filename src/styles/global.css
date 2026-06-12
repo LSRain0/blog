@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "katex/dist/katex.min.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -41,9 +40,9 @@
   --shadow-glass-dark: 0 8px 32px rgba(0, 0, 0, 0.25);
   --shadow-glass-hover-dark: 0 20px 48px rgba(0, 0, 0, 0.35);
 
-  /* 字体 */
-  --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  /* 字体 - 系统字体栈，零加载开销 */
+  --font-sans: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", "SF Mono", Menlo, Consolas, monospace;
 
   /* 动画时间 */
   --animate-duration: 200ms;
@@ -139,6 +138,13 @@ body::after {
   background: var(--color-glass-dark);
   border-color: var(--color-glass-border-dark);
   box-shadow: var(--shadow-glass-dark);
+}
+
+/* 主要内容区域内的卡片不需要嵌套 blur，只需半透明底色 */
+main > div .glass,
+main > article .glass {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .glass-hover:hover {

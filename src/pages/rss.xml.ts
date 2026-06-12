@@ -2,6 +2,7 @@ import rss from '@astrojs/rss';
 import { getCollection, render } from 'astro:content';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { APIContext } from 'astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 export async function GET(context: APIContext) {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
@@ -32,8 +33,8 @@ export async function GET(context: APIContext) {
   }
 
   return rss({
-    title: 'LSRain的小屋',
-    description: '物理笔记、数学推导、编程记录、生活随想',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     site: context.site!,
     items,
     customData: '<language>zh-CN</language>',

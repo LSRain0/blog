@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lsrain.vercel.app/sitemap-index.xml
+Sitemap: https://lsrain-blog.com/sitemap-index.xml

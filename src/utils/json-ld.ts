@@ -1,3 +1,5 @@
+import { SITE_TITLE, SITE_DESCRIPTION, AUTHOR_NAME } from '../consts';
+
 export interface ArticleSchema {
   title: string;
   description: string;
@@ -12,12 +14,12 @@ export function websiteSchema(siteUrl: string) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'LSRain的小屋',
+    name: SITE_TITLE,
     url: siteUrl,
-    description: '物理笔记、数学推导、编程记录、生活随想',
+    description: SITE_DESCRIPTION,
     author: {
       '@type': 'Person',
-      name: 'LSRain',
+      name: AUTHOR_NAME,
     },
     potentialAction: {
       '@type': 'SearchAction',
@@ -38,11 +40,11 @@ export function articleSchema(data: ArticleSchema) {
     dateModified: data.dateModified || data.datePublished,
     author: {
       '@type': 'Person',
-      name: 'LSRain',
+      name: AUTHOR_NAME,
     },
     publisher: {
       '@type': 'Organization',
-      name: 'LSRain的小屋',
+      name: SITE_TITLE,
     },
     ...(data.image ? { image: data.image } : {}),
     ...(data.tags?.length ? { keywords: data.tags.join(', ') } : {}),

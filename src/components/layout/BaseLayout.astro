@@ -1,8 +1,9 @@
 ---
 import SiteHeader from './SiteHeader.astro';
 import SiteFooter from './SiteFooter.astro';
+import { ClientRouter } from 'astro:transitions';
 import '../../styles/global.css';
-import { SITE_DESCRIPTION, SITE_URL } from '../../consts';
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, AUTHOR_NAME } from '../../consts';
 import { websiteSchema } from '../../utils/json-ld';
 
 interface Props {
@@ -26,14 +27,14 @@ const siteJsonLd = jsonLd || websiteSchema(SITE_URL);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="author" content="LSRain" />
+    <meta name="author" content={AUTHOR_NAME} />
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:site_name" content="LSRain的小屋" />
+    <meta property="og:site_name" content={SITE_TITLE} />
     <meta property="og:locale" content="zh_CN" />
     <meta property="og:image" content={ogImage} />
 
@@ -46,10 +47,11 @@ const siteJsonLd = jsonLd || websiteSchema(SITE_URL);
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="alternate" type="application/rss+xml" title="LSRain的小屋" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/rss.xml" />
 
-    <title>{title} | LSRain的小屋</title>
+    <title>{title} | {SITE_TITLE}</title>
 
+    <ClientRouter />
     <script is:inline type="application/ld+json" set:html={JSON.stringify(siteJsonLd)} />
 
     <script is:inline>
@@ -60,17 +62,24 @@ const siteJsonLd = jsonLd || websiteSchema(SITE_URL);
       }
 
       // 初始化背景图片（异步加载，不阻塞首屏）
-      (function() {
-        var BG_COUNT = 17;
+      function initBackground() {
+        var BG_INDICES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13];
         var saved = localStorage.getItem('bg-index');
         var idx;
         if (saved !== null) {
           idx = parseInt(saved, 10);
+          // 验证保存的索引是否有效
+          if (!BG_INDICES.includes(idx)) {
+            idx = BG_INDICES[Math.floor(Math.random() * BG_INDICES.length)];
+            localStorage.setItem('bg-index', idx);
+          }
         } else {
-          idx = Math.floor(Math.random() * BG_COUNT) + 1;
+          idx = BG_INDICES[Math.floor(Math.random() * BG_INDICES.length)];
           localStorage.setItem('bg-index', idx);
         }
-        var url = '/backgrounds/bg-' + idx + '.jpg';
+        var isMobile = window.innerWidth <= 768;
+        var folder = isMobile ? 'mobile' : 'desktop';
+        var url = '/backgrounds/' + folder + '/bg-' + idx + '.webp';
         document.documentElement.style.setProperty('--bg-image', 'url("' + url + '")');
         // 异步预加载图片，加载完成后显示
         var img = new Image();
@@ -78,10 +87,19 @@ const siteJsonLd = jsonLd || websiteSchema(SITE_URL);
           document.body.classList.add('bg-loaded');
         };
         img.src = url;
-      })();
+      }
+
+      // 首次加载时初始化背景
+      initBackground();
+
+      // 页面导航时重新初始化背景（Astro ClientRouter）
+      document.addEventListener('astro:page-load', initBackground);
     </script>
   </head>
   <body class="min-h-screen flex flex-col">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-primary focus:text-white">
+      跳到主要内容
+    </a>
     <SiteHeader />
     <main class="flex-1">
       <slot />
@@ -91,7 +109,9 @@ const siteJsonLd = jsonLd || websiteSchema(SITE_URL);
     <script is:inline>
       // 全局快捷键: "/" 跳转搜索
       document.addEventListener('keydown', (e) => {
-        if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+        if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey
+            && !['INPUT', 'TEXTAREA'].includes(e.target.tagName)
+            && !e.target.isContentEditable) {
           e.preventDefault();
           window.location.href = '/search/';
         }

@@ -6,11 +6,13 @@ import MobileTOC from '../../components/post/MobileTOC.astro';
 import ReadingProgress from '../../components/post/ReadingProgress.astro';
 import BackToTop from '../../components/post/BackToTop.astro';
 import TwikooComment from '../../components/post/TwikooComment.astro';
+import PostMeta from '../../components/post/PostMeta.astro';
+import PrevNextNav from '../../components/post/PrevNextNav.astro';
 import { getCollection, render } from 'astro:content';
-import { formatDate } from '../../utils/date';
 import { calculateReadingTime } from '../../utils/reading-time';
 import { articleSchema, breadcrumbListSchema } from '../../utils/json-ld';
 import { SITE_URL } from '../../consts';
+import 'katex/dist/katex.min.css';
 
 export async function getStaticPaths() {
   const notes = await getCollection('notes', ({ data }) => !data.draft);
@@ -91,37 +93,12 @@ const jsonLd = [
       <article class:list={['flex-1 min-w-0', seriesNotes.length === 0 && 'max-w-4xl mx-auto']}>
         <header class="mb-8">
           <h1 class="text-3xl md:text-4xl font-bold mb-4">{note.data.title}</h1>
-          <div class="flex flex-wrap items-center gap-3 text-sm text-text-secondary">
-            <time datetime={note.data.pubDate.toISOString()} class="flex items-center gap-1.5">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              {formatDate(note.data.pubDate)}
-            </time>
-            {note.data.updatedDate && (
-              <span class="text-xs opacity-70">
-                (更新于 {formatDate(note.data.updatedDate)})
-              </span>
-            )}
-            <span class="flex items-center gap-1.5">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {readingTime} 分钟阅读
-            </span>
-          </div>
-          {note.data.tags.length > 0 && (
-            <div class="flex flex-wrap gap-2 mt-4">
-              {note.data.tags.map(tag => (
-                <a
-                  href={`/tags/${encodeURIComponent(tag)}/`}
-                  class="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/15 transition-colors duration-200"
-                >
-                  #{tag}
-                </a>
-              ))}
-            </div>
-          )}
+          <PostMeta
+            pubDate={note.data.pubDate}
+            updatedDate={note.data.updatedDate}
+            readingTime={readingTime}
+            tags={note.data.tags}
+          />
         </header>
 
         <MarkdownProse data-pagefind-body>
@@ -131,42 +108,11 @@ const jsonLd = [
         {/* 评论区 */}
         <TwikooComment path={`/notes/${note.id}`} />
 
-        <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
-          <nav class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {prevNote && (
-              <a
-                href={`/notes/${prevNote.id}/`}
-                class="group p-4 rounded-xl glass glass-hover transition-all duration-200"
-              >
-                <span class="text-xs text-text-secondary flex items-center gap-1 mb-1">
-                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                  </svg>
-                  上一篇
-                </span>
-                <span class="text-sm font-medium text-text dark:text-text-dark group-hover:text-primary transition-colors line-clamp-1">
-                  {prevNote.data.title}
-                </span>
-              </a>
-            )}
-            {nextNote && (
-              <a
-                href={`/notes/${nextNote.id}/`}
-                class="group p-4 rounded-xl glass glass-hover transition-all duration-200 md:text-right md:ml-auto"
-              >
-                <span class="text-xs text-text-secondary flex items-center gap-1 mb-1 md:justify-end">
-                  下一篇
-                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </span>
-                <span class="text-sm font-medium text-text dark:text-text-dark group-hover:text-primary transition-colors line-clamp-1">
-                  {nextNote.data.title}
-                </span>
-              </a>
-            )}
-          </nav>
-        </footer>
+        {/* 上下篇导航 */}
+        <PrevNextNav
+          prev={prevNote ? { slug: prevNote.id, title: prevNote.data.title, basePath: '/notes' } : null}
+          next={nextNote ? { slug: nextNote.id, title: nextNote.data.title, basePath: '/notes' } : null}
+        />
       </article>
 
       {/* 右侧边栏 - 系列导航 */}

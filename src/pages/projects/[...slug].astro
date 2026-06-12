@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import MarkdownProse from '../../components/post/MarkdownProse.astro';
+import PrevNextNav from '../../components/post/PrevNextNav.astro';
 import { getCollection, render } from 'astro:content';
 import { formatDate } from '../../utils/date';
 
@@ -81,46 +82,13 @@ const nextProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
       <Content />
     </MarkdownProse>
 
-    <footer class="mt-12 pt-8 border-t border-border dark:border-border-dark">
-      <nav class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {prevProject && (
-          <a
-            href={`/projects/${prevProject.id}/`}
-            class="group p-4 rounded-xl glass glass-hover transition-all duration-200"
-          >
-            <span class="text-xs text-text-secondary flex items-center gap-1 mb-1">
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-              上一个项目
-            </span>
-            <span class="text-sm font-medium text-text dark:text-text-dark group-hover:text-primary transition-colors line-clamp-1">
-              {prevProject.data.title}
-            </span>
-          </a>
-        )}
-        {nextProject && (
-          <a
-            href={`/projects/${nextProject.id}/`}
-            class="group p-4 rounded-xl glass glass-hover transition-all duration-200 md:text-right md:ml-auto"
-          >
-            <span class="text-xs text-text-secondary flex items-center gap-1 mb-1 md:justify-end">
-              下一个项目
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </span>
-            <span class="text-sm font-medium text-text dark:text-text-dark group-hover:text-primary transition-colors line-clamp-1">
-              {nextProject.data.title}
-            </span>
-          </a>
-        )}
-      </nav>
-      <div class="mt-4 text-center">
-        <a href="/projects/" class="text-sm text-text-secondary hover:text-primary transition-colors">
-          ← 返回项目列表
-        </a>
-      </div>
-    </footer>
+    {/* 上下篇导航 */}
+    <PrevNextNav
+      prev={prevProject ? { slug: prevProject.id, title: prevProject.data.title, basePath: '/projects' } : null}
+      next={nextProject ? { slug: nextProject.id, title: nextProject.data.title, basePath: '/projects' } : null}
+      prevLabel="上一个项目"
+      nextLabel="下一个项目"
+      backLink={{ href: '/projects/', label: '返回项目列表' }}
+    />
   </article>
 </BaseLayout>
